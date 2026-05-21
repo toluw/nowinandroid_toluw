@@ -30,6 +30,7 @@ interface UserNewsResourceRepository {
         query: NewsResourceQuery = NewsResourceQuery(
             filterTopicIds = null,
             filterNewsIds = null,
+            selectedBookmarkedNewsIds = emptySet()
         ),
     ): Flow<List<UserNewsResource>>
 

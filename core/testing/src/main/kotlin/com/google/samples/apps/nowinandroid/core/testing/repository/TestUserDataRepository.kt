@@ -89,6 +89,19 @@ class TestUserDataRepository : UserDataRepository {
         }
     }
 
+    override suspend fun clearAllSelectedNewsResource() {
+        currentUserData.let{current ->
+            _userData.tryEmit(
+                current.copy(
+                    selectedBookMarkedNewsResource = setOf()
+
+                ),
+            )
+
+
+        }
+    }
+
     override suspend fun setNewsResourceSelected(
         newsResourceId: String,
         selected: Boolean,

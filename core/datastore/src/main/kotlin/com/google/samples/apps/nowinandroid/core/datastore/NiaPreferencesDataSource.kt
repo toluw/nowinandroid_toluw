@@ -122,6 +122,18 @@ class NiaPreferencesDataSource @Inject constructor(
     }
 
 
+    suspend fun clearAllSelectedNewsResource(){
+        try {
+          userPreferences.updateData {
+              it.copy {
+                  selectedNewsResourceIds.clear()
+              }
+          }
+        }catch (ioException: IOException) {
+            Log.e("NiaPreferences", "Failed to update user preferences", ioException)
+        }
+    }
+
     suspend fun setBookMarkedNewsResourceSelected(newsResourceId: String, selected: Boolean){
         try {
            userPreferences.updateData {

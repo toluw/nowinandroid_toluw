@@ -50,6 +50,10 @@ class FakeUserDataRepository @Inject constructor(
     override suspend fun setNewsResourceViewed(newsResourceId: String, viewed: Boolean) =
         niaPreferencesDataSource.setNewsResourceViewed(newsResourceId, viewed)
 
+    override suspend fun clearAllSelectedNewsResource() {
+        niaPreferencesDataSource.clearAllSelectedNewsResource()
+    }
+
     override suspend fun setNewsResourceSelected(
         newsResourceId: String,
         selected: Boolean,

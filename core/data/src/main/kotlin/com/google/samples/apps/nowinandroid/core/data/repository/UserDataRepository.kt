@@ -49,6 +49,11 @@ interface UserDataRepository {
     suspend fun setNewsResourceViewed(newsResourceId: String, viewed: Boolean)
 
     /**
+     * Clear all selections for multiselect mode
+     */
+    suspend fun clearAllSelectedNewsResource()
+
+    /**
      * Updates the selected status for a news resource
      */
     suspend fun setNewsResourceSelected(newsResourceId: String, selected: Boolean)

@@ -69,6 +69,25 @@ class BookmarksViewModel @Inject constructor(
         }
     }
 
+    fun clearMultiSelectMode(){
+       viewModelScope.launch {
+           isMultiSelectMode = false
+           userDataRepository.clearAllSelectedNewsResource()
+       }
+
+    }
+
+    fun initiateMultiSelectMode(newsResourceId: String){
+        isMultiSelectMode = true
+        setNewsResourceSelected(newsResourceId, true)
+    }
+
+    fun setNewsResourceSelected(newsResourceId: String, selected: Boolean){
+        viewModelScope.launch {
+            userDataRepository.setNewsResourceSelected(newsResourceId, selected)
+        }
+    }
+
 
 
     fun undoBookmarkRemoval() {
