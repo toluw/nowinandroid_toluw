@@ -43,7 +43,7 @@ class BookmarksViewModel @Inject constructor(
 
     var shouldDisplayUndoBookmark by mutableStateOf(false)
     private var lastRemovedBookmarkId: String? = null
-    var isMultiSelectMode by mutableStateOf(false)
+
 
     val feedUiState: StateFlow<NewsFeedUiState> =
         userNewsResourceRepository.observeAllBookmarked()
@@ -69,18 +69,13 @@ class BookmarksViewModel @Inject constructor(
         }
     }
 
-    fun clearMultiSelectMode(){
-       viewModelScope.launch {
-           isMultiSelectMode = false
-           userDataRepository.clearAllSelectedNewsResource()
-       }
 
+    fun clearAllSelectedNewResource(){
+        viewModelScope.launch {
+            userDataRepository.clearAllSelectedNewsResource()
+        }
     }
 
-    fun initiateMultiSelectMode(newsResourceId: String){
-        isMultiSelectMode = true
-        setNewsResourceSelected(newsResourceId, true)
-    }
 
     fun setNewsResourceSelected(newsResourceId: String, selected: Boolean){
         viewModelScope.launch {

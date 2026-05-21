@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -32,6 +33,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentSize
@@ -39,6 +41,8 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -64,9 +68,12 @@ import com.google.samples.apps.nowinandroid.core.designsystem.component.NiaLoadi
 import com.google.samples.apps.nowinandroid.core.designsystem.component.scrollbar.DraggableScrollbar
 import com.google.samples.apps.nowinandroid.core.designsystem.component.scrollbar.rememberDraggableScroller
 import com.google.samples.apps.nowinandroid.core.designsystem.component.scrollbar.scrollbarState
+import com.google.samples.apps.nowinandroid.core.designsystem.icon.NiaIcons
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.LocalTintTheme
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
 import com.google.samples.apps.nowinandroid.core.model.data.UserNewsResource
+import com.google.samples.apps.nowinandroid.core.model.data.getSelectedNewsCount
+import com.google.samples.apps.nowinandroid.core.ui.BookmarkButton
 import com.google.samples.apps.nowinandroid.core.ui.NewsFeedUiState
 import com.google.samples.apps.nowinandroid.core.ui.NewsFeedUiState.Loading
 import com.google.samples.apps.nowinandroid.core.ui.NewsFeedUiState.Success
@@ -94,6 +101,8 @@ internal fun BookmarksScreen(
         shouldDisplayUndoBookmark = viewModel.shouldDisplayUndoBookmark,
         undoBookmarkRemoval = viewModel::undoBookmarkRemoval,
         clearUndoState = viewModel::clearUndoState,
+        onCloseMultiSelect = viewModel::clearAllSelectedNewResource,
+        onRemoveSelectedFromBookMarks = TODO(),
     )
 }
 
@@ -112,6 +121,9 @@ internal fun BookmarksScreen(
     shouldDisplayUndoBookmark: Boolean = false,
     undoBookmarkRemoval: () -> Unit = {},
     clearUndoState: () -> Unit = {},
+    onCloseMultiSelect: () -> Unit,
+    onRemoveSelectedFromBookMarks: () -> Unit,
+    
 ) {
     val bookmarkRemovedMessage = stringResource(id = R.string.feature_bookmarks_api_removed)
     val undoText = stringResource(id = R.string.feature_bookmarks_api_undo)
@@ -139,7 +151,11 @@ internal fun BookmarksScreen(
                 removeFromBookmarks,
                 onNewsResourceViewed,
                 onTopicClick,
-                modifier,
+                onRemoveSelectedFromBookMarks = onRemoveSelectedFromBookMarks,
+                onCloseMultiSelect = onCloseMultiSelect
+                   
+                
+                
             )
         } else {
             EmptyState(modifier)
@@ -166,6 +182,8 @@ private fun BookmarksGrid(
     removeFromBookmarks: (String) -> Unit,
     onNewsResourceViewed: (String) -> Unit,
     onTopicClick: (String) -> Unit,
+    onCloseMultiSelect: () -> Unit,
+    onRemoveSelectedFromBookMarks: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val scrollableState = rememberLazyStaggeredGridState()
@@ -213,7 +231,54 @@ private fun BookmarksGrid(
                 itemsAvailable = itemsAvailable,
             ),
         )
+
+        if(feedState is Success && feedState.feed.getSelectedNewsCount() > 0){
+            MultiSelectDetails(
+                feedState = feedState,
+                modifier = Modifier.fillMaxWidth(),
+                onCloseMultiSelect = onCloseMultiSelect,
+                onRemoveSelectedFromBookMarks = onRemoveSelectedFromBookMarks
+                
+            )
+        }
     }
+}
+
+@Composable
+private fun MultiSelectDetails(
+    modifier: Modifier = Modifier,
+    feedState: NewsFeedUiState,
+    onCloseMultiSelect: () -> Unit,
+    onRemoveSelectedFromBookMarks: () -> Unit
+){
+   when (feedState){
+       Loading -> Unit
+       is Success -> {
+           Row(modifier.padding(vertical = 8.dp, horizontal = 8.dp)) {
+
+               IconButton(onClick = onCloseMultiSelect) {
+                   Icon(
+                       imageVector = NiaIcons.Close,
+                       contentDescription = stringResource(com.google.samples.apps.nowinandroid.core.ui.R.string.core_ui_close),
+                   )
+               }
+
+               Spacer(Modifier.width(8.dp))
+
+               Text(text = feedState.feed.getSelectedNewsCount().toString())
+
+               Spacer(Modifier.width(8.dp))
+
+               BookmarkButton(isBookmarked = true, onClick = {
+
+               })
+
+
+
+
+           }
+       }
+   }
 }
 
 @Composable
@@ -255,6 +320,8 @@ private fun EmptyState(modifier: Modifier = Modifier) {
     }
 }
 
+
+
 @Preview
 @Composable
 private fun LoadingStatePreview() {
@@ -275,6 +342,9 @@ private fun BookmarksGridPreview(
             removeFromBookmarks = {},
             onNewsResourceViewed = {},
             onTopicClick = {},
+            onCloseMultiSelect = {},
+            onRemoveSelectedFromBookMarks = {},
+            modifier = Modifier,
         )
     }
 }

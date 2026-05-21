@@ -57,3 +57,10 @@ data class UserNewsResource internal constructor(
 
 fun List<NewsResource>.mapToUserNewsResources(userData: UserData): List<UserNewsResource> =
     map { UserNewsResource(it, userData) }
+
+
+fun List<UserNewsResource>.getSelectedNewsCount(): Int {
+
+    return this.filter { it.isSelected }.size
+
+}
