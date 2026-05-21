@@ -48,7 +48,10 @@ interface UserDataRepository {
      */
     suspend fun setNewsResourceViewed(newsResourceId: String, viewed: Boolean)
 
-    suspend fun setNewResourceSelected(newsResourceId: String, selected: Boolean)
+    /**
+     * Updates the selected status for a news resource
+     */
+    suspend fun setNewsResourceSelected(newsResourceId: String, selected: Boolean)
 
     /**
      * Sets the desired theme brand.

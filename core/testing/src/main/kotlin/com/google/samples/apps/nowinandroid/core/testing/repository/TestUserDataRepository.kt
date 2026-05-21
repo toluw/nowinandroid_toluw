@@ -33,6 +33,7 @@ val emptyUserData = UserData(
     darkThemeConfig = DarkThemeConfig.FOLLOW_SYSTEM,
     useDynamicColor = false,
     shouldHideOnboarding = false,
+    selectedBookMarkedNewsResource = emptySet()
 )
 
 class TestUserDataRepository : UserDataRepository {
@@ -85,6 +86,26 @@ class TestUserDataRepository : UserDataRepository {
                     },
                 ),
             )
+        }
+    }
+
+    override suspend fun setNewsResourceSelected(
+        newsResourceId: String,
+        selected: Boolean,
+    ) {
+        currentUserData.let{current ->
+            _userData.tryEmit(
+                current.copy(
+                    selectedBookMarkedNewsResource =
+                        if(selected){
+                            current.selectedBookMarkedNewsResource + newsResourceId
+                        }else{
+                            current.selectedBookMarkedNewsResource - newsResourceId
+                        },
+                ),
+            )
+
+
         }
     }
 

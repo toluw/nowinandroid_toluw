@@ -50,6 +50,7 @@ object PreviewParameterData {
         darkThemeConfig = DarkThemeConfig.DARK,
         shouldHideOnboarding = true,
         useDynamicColor = false,
+        selectedBookMarkedNewsResource = setOf("3")
     )
 
     val topics = listOf(

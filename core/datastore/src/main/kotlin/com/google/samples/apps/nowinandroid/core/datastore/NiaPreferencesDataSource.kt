@@ -56,6 +56,7 @@ class NiaPreferencesDataSource @Inject constructor(
                 },
                 useDynamicColor = it.useDynamicColor,
                 shouldHideOnboarding = it.shouldHideOnboarding,
+                selectedBookMarkedNewsResource = it.selectedNewsResourceIdsMap.keys
             )
         }
 
@@ -117,6 +118,23 @@ class NiaPreferencesDataSource @Inject constructor(
                     DarkThemeConfig.DARK -> DarkThemeConfigProto.DARK_THEME_CONFIG_DARK
                 }
             }
+        }
+    }
+
+
+    suspend fun setBookMarkedNewsResourceSelected(newsResourceId: String, selected: Boolean){
+        try {
+           userPreferences.updateData {
+               it.copy {
+                   if(selected){
+                       selectedNewsResourceIds.put(newsResourceId, true)
+                   }else{
+                       selectedNewsResourceIds.remove(newsResourceId)
+                   }
+               }
+           }
+        }catch (ioException: IOException) {
+            Log.e("NiaPreferences", "Failed to update user preferences", ioException)
         }
     }
 
