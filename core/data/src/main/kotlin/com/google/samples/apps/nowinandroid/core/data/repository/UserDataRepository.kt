@@ -48,6 +48,8 @@ interface UserDataRepository {
      */
     suspend fun setNewsResourceViewed(newsResourceId: String, viewed: Boolean)
 
+    suspend fun setNewResourceSelected(newsResourceId: String, selected: Boolean)
+
     /**
      * Sets the desired theme brand.
      */

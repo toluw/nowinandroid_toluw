@@ -54,16 +54,17 @@ class CompositeUserNewsResourceRepository @Inject constructor(
             .flatMapLatest { followedTopics ->
                 when {
                     followedTopics.isEmpty() -> flowOf(emptyList())
-                    else -> observeAll(NewsResourceQuery(filterTopicIds = followedTopics))
+                    else -> observeAll(NewsResourceQuery(filterTopicIds = followedTopics, selectedBookmarkedNewsIds = setOf()))
                 }
             }
 
     override fun observeAllBookmarked(): Flow<List<UserNewsResource>> =
-        userDataRepository.userData.map { it.bookmarkedNewsResources }.distinctUntilChanged()
-            .flatMapLatest { bookmarkedNewsResources ->
+        userDataRepository.userData.map { Pair(it.bookmarkedNewsResources, it.selectedBookMarkedNewsResource)  }.distinctUntilChanged()
+            .flatMapLatest { (bookmarkedNewsResources, selectedBookmarkedResource) ->
                 when {
                     bookmarkedNewsResources.isEmpty() -> flowOf(emptyList())
-                    else -> observeAll(NewsResourceQuery(filterNewsIds = bookmarkedNewsResources))
+                    else -> observeAll(NewsResourceQuery(filterNewsIds = bookmarkedNewsResources, selectedBookmarkedNewsIds = selectedBookmarkedResource))
+
                 }
             }
 }

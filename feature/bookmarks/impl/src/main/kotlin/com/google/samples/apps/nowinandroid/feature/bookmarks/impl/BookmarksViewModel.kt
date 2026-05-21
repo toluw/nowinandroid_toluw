@@ -43,6 +43,7 @@ class BookmarksViewModel @Inject constructor(
 
     var shouldDisplayUndoBookmark by mutableStateOf(false)
     private var lastRemovedBookmarkId: String? = null
+    var isMultiSelectMode by mutableStateOf(false)
 
     val feedUiState: StateFlow<NewsFeedUiState> =
         userNewsResourceRepository.observeAllBookmarked()

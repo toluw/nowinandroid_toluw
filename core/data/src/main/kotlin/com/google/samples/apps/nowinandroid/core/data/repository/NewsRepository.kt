@@ -32,6 +32,8 @@ data class NewsResourceQuery(
      * News ids to filter for. Null means any news id will match.
      */
     val filterNewsIds: Set<String>? = null,
+
+    val selectedBookmarkedNewsIds: Set<String>
 )
 
 /**
@@ -45,6 +47,7 @@ interface NewsRepository : Syncable {
         query: NewsResourceQuery = NewsResourceQuery(
             filterTopicIds = null,
             filterNewsIds = null,
+            selectedBookmarkedNewsIds = setOf()
         ),
     ): Flow<List<NewsResource>>
 }

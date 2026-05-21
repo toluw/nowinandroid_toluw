@@ -63,9 +63,17 @@ class FakeNewsRepository @Inject constructor(
                         )
                             .all(true::equals)
                     }
-                    .map { it.asExternalModel(topics) },
+                    .map { it.asExternalModel(topics) }
+                    .map {
+                        it.copy(isSelected = shouldSelectNews(it.id, query.selectedBookmarkedNewsIds))
+                    },
             )
         }.flowOn(ioDispatcher)
 
     override suspend fun syncWith(synchronizer: Synchronizer) = true
+
+
+    private fun shouldSelectNews(newsId: String, selectedBookmarkedNewsIds: Set<String>?): Boolean{
+        return selectedBookmarkedNewsIds?.contains(newsId) == true
+    }
 }
