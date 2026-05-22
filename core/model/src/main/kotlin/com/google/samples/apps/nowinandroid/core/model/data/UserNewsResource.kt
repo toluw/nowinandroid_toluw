@@ -64,3 +64,7 @@ fun List<UserNewsResource>.getSelectedNewsCount(): Int {
     return this.filter { it.isSelected }.size
 
 }
+
+fun List<UserNewsResource>.getSelectedNews(): List<UserNewsResource> {
+    return this.filter { it.isSelected }
+}

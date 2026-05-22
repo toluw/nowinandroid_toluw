@@ -23,6 +23,7 @@ import com.google.samples.apps.nowinandroid.core.common.result.asResult
 import com.google.samples.apps.nowinandroid.core.data.repository.NewsResourceQuery
 import com.google.samples.apps.nowinandroid.core.data.repository.TopicsRepository
 import com.google.samples.apps.nowinandroid.core.data.repository.UserDataRepository
+import com.google.samples.apps.nowinandroid.core.data.repository.UserDataRepository.setNewsResourceBookmarked
 import com.google.samples.apps.nowinandroid.core.data.repository.UserNewsResourceRepository
 import com.google.samples.apps.nowinandroid.core.model.data.FollowableTopic
 import com.google.samples.apps.nowinandroid.core.model.data.Topic
@@ -76,7 +77,7 @@ class TopicViewModel @AssistedInject constructor(
 
     fun bookmarkNews(newsResourceId: String, bookmarked: Boolean) {
         viewModelScope.launch {
-            userDataRepository.setNewsResourceBookmarked(newsResourceId, bookmarked)
+            newsResourceId.setNewsResourceBookmarked(bookmarked)
         }
     }
 

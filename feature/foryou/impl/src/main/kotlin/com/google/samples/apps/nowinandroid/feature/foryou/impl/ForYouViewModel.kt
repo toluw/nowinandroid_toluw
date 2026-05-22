@@ -24,6 +24,7 @@ import com.google.samples.apps.nowinandroid.core.analytics.AnalyticsEvent.Param
 import com.google.samples.apps.nowinandroid.core.analytics.AnalyticsHelper
 import com.google.samples.apps.nowinandroid.core.data.repository.NewsResourceQuery
 import com.google.samples.apps.nowinandroid.core.data.repository.UserDataRepository
+import com.google.samples.apps.nowinandroid.core.data.repository.UserDataRepository.setNewsResourceBookmarked
 import com.google.samples.apps.nowinandroid.core.data.repository.UserNewsResourceRepository
 import com.google.samples.apps.nowinandroid.core.data.util.SyncManager
 import com.google.samples.apps.nowinandroid.core.domain.GetFollowableTopicsUseCase
@@ -117,7 +118,7 @@ class ForYouViewModel @Inject constructor(
 
     fun updateNewsResourceSaved(newsResourceId: String, isChecked: Boolean) {
         viewModelScope.launch {
-            userDataRepository.setNewsResourceBookmarked(newsResourceId, isChecked)
+            newsResourceId.setNewsResourceBookmarked(isChecked)
         }
     }
 

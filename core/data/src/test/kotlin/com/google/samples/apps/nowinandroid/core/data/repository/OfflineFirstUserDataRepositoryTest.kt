@@ -17,6 +17,7 @@
 package com.google.samples.apps.nowinandroid.core.data.repository
 
 import com.google.samples.apps.nowinandroid.core.analytics.NoOpAnalyticsHelper
+import com.google.samples.apps.nowinandroid.core.data.repository.UserDataRepository.setNewsResourceBookmarked
 import com.google.samples.apps.nowinandroid.core.datastore.NiaPreferencesDataSource
 import com.google.samples.apps.nowinandroid.core.datastore.UserPreferences
 import com.google.samples.apps.nowinandroid.core.datastore.test.InMemoryDataStore
@@ -127,7 +128,7 @@ class OfflineFirstUserDataRepositoryTest {
     @Test
     fun offlineFirstUserDataRepository_bookmark_news_resource_logic_delegates_to_nia_preferences() =
         testScope.runTest {
-            subject.setNewsResourceBookmarked(newsResourceId = "0", bookmarked = true)
+            "0".setNewsResourceBookmarked(bookmarked = true)
 
             assertEquals(
                 setOf("0"),
@@ -136,7 +137,7 @@ class OfflineFirstUserDataRepositoryTest {
                     .first(),
             )
 
-            subject.setNewsResourceBookmarked(newsResourceId = "1", bookmarked = true)
+            "1".setNewsResourceBookmarked(bookmarked = true)
 
             assertEquals(
                 setOf("0", "1"),

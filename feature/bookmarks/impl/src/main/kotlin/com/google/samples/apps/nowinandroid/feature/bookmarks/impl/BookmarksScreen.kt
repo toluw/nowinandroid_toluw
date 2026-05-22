@@ -102,7 +102,7 @@ internal fun BookmarksScreen(
         undoBookmarkRemoval = viewModel::undoBookmarkRemoval,
         clearUndoState = viewModel::clearUndoState,
         onCloseMultiSelect = viewModel::clearAllSelectedNewResource,
-        onRemoveSelectedFromBookMarks = TODO(),
+        onRemoveSelectedFromBookMarks = viewModel::removeSelectedNewsFromBookMark,
     )
 }
 
@@ -235,7 +235,7 @@ private fun BookmarksGrid(
         if(feedState is Success && feedState.feed.getSelectedNewsCount() > 0){
             MultiSelectDetails(
                 feedState = feedState,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().align(alignment = Alignment.TopStart),
                 onCloseMultiSelect = onCloseMultiSelect,
                 onRemoveSelectedFromBookMarks = onRemoveSelectedFromBookMarks
                 
@@ -254,7 +254,7 @@ private fun MultiSelectDetails(
    when (feedState){
        Loading -> Unit
        is Success -> {
-           Row(modifier.padding(vertical = 8.dp, horizontal = 8.dp)) {
+           Row(modifier.padding(vertical = 8.dp, horizontal = 8.dp), verticalAlignment = Alignment.CenterVertically) {
 
                IconButton(onClick = onCloseMultiSelect) {
                    Icon(
@@ -279,6 +279,21 @@ private fun MultiSelectDetails(
            }
        }
    }
+}
+
+@Preview
+@Composable
+private fun MultiSelectDetailsPreview(
+    @PreviewParameter(UserNewsResourcePreviewParameterProvider::class)
+    userNewsResources: List<UserNewsResource>,
+){
+    NiaTheme {
+        MultiSelectDetails(
+            Modifier.fillMaxWidth(),
+            feedState = Success(userNewsResources),
+            onCloseMultiSelect = {},
+        ) { }
+    }
 }
 
 @Composable

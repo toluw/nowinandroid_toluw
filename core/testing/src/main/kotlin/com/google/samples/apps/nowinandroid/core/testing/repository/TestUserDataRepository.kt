@@ -74,6 +74,15 @@ class TestUserDataRepository : UserDataRepository {
         }
     }
 
+    override suspend fun clearBookmarkedNewsResources(newsResourceIds: Set<String>) {
+        currentUserData.let{current ->
+
+            val bookmarkedNews = current.bookmarkedNewsResources - newsResourceIds
+
+            _userData.tryEmit(current.copy(bookmarkedNewsResources = bookmarkedNews))
+        }
+    }
+
     override suspend fun setNewsResourceViewed(newsResourceId: String, viewed: Boolean) {
         currentUserData.let { current ->
             _userData.tryEmit(

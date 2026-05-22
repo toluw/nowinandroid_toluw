@@ -70,11 +70,24 @@ class BookmarksViewModel @Inject constructor(
     }
 
 
+    fun removeSelectedNewsFromBookMark(){
+        if(feedUiState is NewsFeedUiState.Success){
+            viewModelScope.launch {
+                userDataRepository.clearBookmarkedNewsResources(feedUiState.feed.map { it.id }.toSet())
+                userDataRepository.clearAllSelectedNewsResource()
+            }
+        }
+
+
+    }
+
     fun clearAllSelectedNewResource(){
         viewModelScope.launch {
             userDataRepository.clearAllSelectedNewsResource()
         }
     }
+
+
 
 
     fun setNewsResourceSelected(newsResourceId: String, selected: Boolean){
