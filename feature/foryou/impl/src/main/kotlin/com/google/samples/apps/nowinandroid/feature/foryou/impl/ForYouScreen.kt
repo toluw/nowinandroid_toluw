@@ -16,6 +16,7 @@
 
 package com.google.samples.apps.nowinandroid.feature.foryou.impl
 
+import android.Manifest
 import android.net.Uri
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
@@ -195,6 +196,8 @@ internal fun ForYouScreen(
                 onNewsResourcesCheckedChanged = onNewsResourcesCheckedChanged,
                 onNewsResourceViewed = onNewsResourceViewed,
                 onTopicClick = onTopicClick,
+                onExpandedCardClick = {},
+                onNewsResourceSelected = {},
             )
 
             item(span = StaggeredGridItemSpan.FullLine, contentType = "bottomSpacing") {
@@ -452,7 +455,7 @@ private fun NotificationPermissionEffect() {
     if (LocalInspectionMode.current) return
     if (VERSION.SDK_INT < VERSION_CODES.TIRAMISU) return
     val notificationsPermissionState = rememberPermissionState(
-        android.Manifest.permission.POST_NOTIFICATIONS,
+        Manifest.permission.POST_NOTIFICATIONS,
     )
     LaunchedEffect(notificationsPermissionState) {
         val status = notificationsPermissionState.status

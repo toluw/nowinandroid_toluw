@@ -365,6 +365,7 @@ private fun SearchResultBody(
                     onExpandedCardClick = {
                         onSearchTriggered(searchQuery)
                     },
+                    onNewsResourceSelected = {},
                 )
             }
         }

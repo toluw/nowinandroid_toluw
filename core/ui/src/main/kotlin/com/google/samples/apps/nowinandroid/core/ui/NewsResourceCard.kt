@@ -75,6 +75,7 @@ import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
 import com.google.samples.apps.nowinandroid.core.model.data.FollowableTopic
 import com.google.samples.apps.nowinandroid.core.model.data.NewsResource
 import com.google.samples.apps.nowinandroid.core.model.data.UserNewsResource
+import com.google.samples.apps.nowinandroid.core.ui.R.string
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toJavaInstant
 import kotlinx.datetime.toJavaZoneId
@@ -173,6 +174,16 @@ fun NewsResourceCardExpanded(
                     NewsResourceTopics(
                         topics = userNewsResource.followableTopics,
                         onTopicClick = onTopicClick,
+                    )
+                }
+
+                if(userNewsResource.isSelected){
+                    Icon(
+                        modifier = Modifier.align(alignment = Alignment.CenterStart),
+                        imageVector = NiaIcons.Add,
+                        contentDescription = stringResource(
+                            id = string.core_ui_interests_card_follow_button_content_desc,
+                        ),
                     )
                 }
             }

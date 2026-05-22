@@ -57,4 +57,5 @@ object NiaIcons {
     val Upcoming = Icons.Rounded.Upcoming
     val UpcomingBorder = Icons.Outlined.Upcoming
     val ViewDay = Icons.Rounded.ViewDay
+
 }
