@@ -67,6 +67,7 @@ class OfflineFirstUserDataRepositoryTest {
                     darkThemeConfig = DarkThemeConfig.FOLLOW_SYSTEM,
                     useDynamicColor = false,
                     shouldHideOnboarding = false,
+                    selectedBookMarkedNewsResource = TODO(),
                 ),
                 subject.userData.first(),
             )
