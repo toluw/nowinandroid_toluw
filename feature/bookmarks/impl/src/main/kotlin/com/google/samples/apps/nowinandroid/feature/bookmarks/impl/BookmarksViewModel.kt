@@ -16,9 +16,11 @@
 
 package com.google.samples.apps.nowinandroid.feature.bookmarks.impl
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotApplyResult
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.samples.apps.nowinandroid.core.data.repository.UserDataRepository
@@ -70,12 +72,13 @@ class BookmarksViewModel @Inject constructor(
     }
 
 
-    fun removeSelectedNewsFromBookMark(){
-        if(feedUiState is NewsFeedUiState.Success){
+    fun removeSelectedNewsFromBookMark(newsResourceId: Set<String>){
+
+
             viewModelScope.launch {
-                userDataRepository.clearBookmarkedNewsResources(feedUiState.feed.map { it.id }.toSet())
+                userDataRepository.clearBookmarkedNewsResources(newsResourceId)
                 userDataRepository.clearAllSelectedNewsResource()
-            }
+
         }
 
 
@@ -90,21 +93,18 @@ class BookmarksViewModel @Inject constructor(
 
 
 
-    fun setNewsResourceSelected(newsResourceId: String){
+    fun setNewsResourceSelected(newsResourceId: String, select: Boolean ){
 
-        if(feedUiState is NewsFeedUiState.Success){
-           val newsResource = feedUiState.feed.firstOrNull { it.id == newsResourceId }
-            newsResource?.let {
                 viewModelScope.launch {
-                    userDataRepository.setNewsResourceSelected(newsResourceId, !it.isSelected)
+                    userDataRepository.setNewsResourceSelected(newsResourceId, select)
                 }
-            }
+
 
 
         }
 
 
-    }
+
 
 
 

@@ -82,6 +82,7 @@ import com.google.samples.apps.nowinandroid.core.ui.TrackScrollJank
 import com.google.samples.apps.nowinandroid.core.ui.UserNewsResourcePreviewParameterProvider
 import com.google.samples.apps.nowinandroid.core.ui.newsFeed
 import com.google.samples.apps.nowinandroid.feature.bookmarks.api.R
+import kotlinx.coroutines.flow.map
 
 @Composable
 internal fun BookmarksScreen(
@@ -102,8 +103,17 @@ internal fun BookmarksScreen(
         undoBookmarkRemoval = viewModel::undoBookmarkRemoval,
         clearUndoState = viewModel::clearUndoState,
         onCloseMultiSelect = viewModel::clearAllSelectedNewResource,
-        onRemoveSelectedFromBookMarks = viewModel::removeSelectedNewsFromBookMark,
-        onNewsResultSelected = viewModel::setNewsResourceSelected,
+        onRemoveSelectedFromBookMarks = {
+         val selectedNews =   (feedState as Success).feed.map { it.id }.toSet()
+            viewModel.removeSelectedNewsFromBookMark(selectedNews)
+        },
+        onNewsResultSelected =  {newsResourceId: String->
+            val feeds = (feedState as Success).feed
+            val newsResource = feeds.firstOrNull {  it.id == newsResourceId }
+            newsResource?.let {
+                viewModel.setNewsResourceSelected(newsResourceId = newsResourceId, !newsResource.isSelected)
+            }
+        }
     )
 }
 
