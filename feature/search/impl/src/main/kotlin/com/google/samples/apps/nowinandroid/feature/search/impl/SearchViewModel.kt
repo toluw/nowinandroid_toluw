@@ -25,7 +25,6 @@ import com.google.samples.apps.nowinandroid.core.analytics.AnalyticsHelper
 import com.google.samples.apps.nowinandroid.core.data.repository.RecentSearchRepository
 import com.google.samples.apps.nowinandroid.core.data.repository.SearchContentsRepository
 import com.google.samples.apps.nowinandroid.core.data.repository.UserDataRepository
-import com.google.samples.apps.nowinandroid.core.data.repository.UserDataRepository.setNewsResourceBookmarked
 import com.google.samples.apps.nowinandroid.core.domain.GetRecentSearchQueriesUseCase
 import com.google.samples.apps.nowinandroid.core.domain.GetSearchContentsUseCase
 import com.google.samples.apps.nowinandroid.core.model.data.UserSearchResult
@@ -118,7 +117,7 @@ class SearchViewModel @Inject constructor(
 
     fun setNewsResourceBookmarked(newsResourceId: String, isChecked: Boolean) {
         viewModelScope.launch {
-            newsResourceId.setNewsResourceBookmarked(isChecked)
+            userDataRepository.setNewsResourceBookmarked(newsResourceId, isChecked)
         }
     }
 

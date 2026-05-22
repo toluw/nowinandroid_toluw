@@ -43,7 +43,7 @@ class FakeUserDataRepository @Inject constructor(
     override suspend fun setTopicIdFollowed(followedTopicId: String, followed: Boolean) =
         niaPreferencesDataSource.setTopicIdFollowed(followedTopicId, followed)
 
-    override suspend fun String.setNewsResourceBookmarked(
+    override suspend fun setNewsResourceBookmarked(
         newsResourceId: String,
         bookmarked: Boolean
     ) {

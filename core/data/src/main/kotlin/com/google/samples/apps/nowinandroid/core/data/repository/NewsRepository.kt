@@ -33,7 +33,7 @@ data class NewsResourceQuery(
      */
     val filterNewsIds: Set<String>? = null,
 
-    val selectedBookmarkedNewsIds: Set<String>
+    val selectedBookmarkedNewsIds: Set<String> = setOf()
 )
 
 /**

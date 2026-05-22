@@ -17,13 +17,13 @@
 package com.google.samples.apps.nowinandroid.feature.bookmarks.impl
 
 import com.google.samples.apps.nowinandroid.core.data.repository.CompositeUserNewsResourceRepository
-import com.google.samples.apps.nowinandroid.core.data.repository.UserDataRepository.setNewsResourceBookmarked
 import com.google.samples.apps.nowinandroid.core.testing.data.newsResourcesTestData
 import com.google.samples.apps.nowinandroid.core.testing.repository.TestNewsRepository
 import com.google.samples.apps.nowinandroid.core.testing.repository.TestUserDataRepository
 import com.google.samples.apps.nowinandroid.core.testing.util.MainDispatcherRule
 import com.google.samples.apps.nowinandroid.core.ui.NewsFeedUiState.Loading
 import com.google.samples.apps.nowinandroid.core.ui.NewsFeedUiState.Success
+import com.google.samples.apps.nowinandroid.feature.bookmarks.impl.BookmarksViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -70,7 +70,7 @@ class BookmarksViewModelTest {
         backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.feedUiState.collect() }
 
         newsRepository.sendNewsResources(newsResourcesTestData)
-        newsResourcesTestData[0].id.setNewsResourceBookmarked(true)
+        userDataRepository.setNewsResourceBookmarked(newsResourcesTestData[0].id, true)
         val item = viewModel.feedUiState.value
         assertIs<Success>(item)
         assertEquals(item.feed.size, 1)
@@ -82,7 +82,7 @@ class BookmarksViewModelTest {
         // Set the news resources to be used by this test
         newsRepository.sendNewsResources(newsResourcesTestData)
         // Start with the resource saved
-        newsResourcesTestData[0].id.setNewsResourceBookmarked(true)
+        userDataRepository.setNewsResourceBookmarked(newsResourcesTestData[0].id, true)
         // Use viewModel to remove saved resource
         viewModel.removeFromSavedResources(newsResourcesTestData[0].id)
         // Verify list of saved resources is now empty
@@ -98,7 +98,7 @@ class BookmarksViewModelTest {
 
         // Given
         newsRepository.sendNewsResources(newsResourcesTestData)
-        newsResourcesTestData[0].id.setNewsResourceBookmarked(true)
+        userDataRepository.setNewsResourceBookmarked(newsResourcesTestData[0].id, true)
         val itemBeforeViewed = viewModel.feedUiState.value
         assertIs<Success>(itemBeforeViewed)
         assertFalse(itemBeforeViewed.feed.first().hasBeenViewed)
@@ -118,7 +118,7 @@ class BookmarksViewModelTest {
 
         // Given
         newsRepository.sendNewsResources(newsResourcesTestData)
-        newsResourcesTestData[0].id.setNewsResourceBookmarked(true)
+        userDataRepository.setNewsResourceBookmarked(newsResourcesTestData[0].id, true)
         viewModel.removeFromSavedResources(newsResourcesTestData[0].id)
         assertTrue(viewModel.shouldDisplayUndoBookmark)
         val itemBeforeUndo = viewModel.feedUiState.value
