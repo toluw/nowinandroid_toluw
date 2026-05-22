@@ -23,6 +23,7 @@ import android.view.View
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.draganddrop.dragAndDropSource
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -94,6 +95,7 @@ fun NewsResourceCardExpanded(
     onToggleBookmark: () -> Unit,
     onClick: () -> Unit,
     onTopicClick: (String) -> Unit,
+    onLongClick: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val clickActionLabel = stringResource(R.string.core_ui_card_tap_action)
@@ -111,12 +113,15 @@ fun NewsResourceCardExpanded(
     }
 
     Card(
-        onClick = onClick,
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         // Use custom label for accessibility services to communicate button's action to user.
         // Pass null for action to only override the label and not the actual action.
         modifier = modifier
+            .combinedClickable(
+                onClick = onClick,
+                onLongClick = onLongClick
+            )
             .semantics {
                 onClick(label = clickActionLabel, action = null)
             }

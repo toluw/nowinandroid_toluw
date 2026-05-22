@@ -103,6 +103,7 @@ internal fun BookmarksScreen(
         clearUndoState = viewModel::clearUndoState,
         onCloseMultiSelect = viewModel::clearAllSelectedNewResource,
         onRemoveSelectedFromBookMarks = viewModel::removeSelectedNewsFromBookMark,
+        onNewsResultSelected = viewModel::setNewsResourceSelected,
     )
 }
 
@@ -122,6 +123,7 @@ internal fun BookmarksScreen(
     undoBookmarkRemoval: () -> Unit = {},
     clearUndoState: () -> Unit = {},
     onCloseMultiSelect: () -> Unit,
+    onNewsResultSelected: (String) -> Unit,
     onRemoveSelectedFromBookMarks: () -> Unit,
     
 ) {
@@ -152,10 +154,9 @@ internal fun BookmarksScreen(
                 onNewsResourceViewed,
                 onTopicClick,
                 onRemoveSelectedFromBookMarks = onRemoveSelectedFromBookMarks,
-                onCloseMultiSelect = onCloseMultiSelect
-                   
-                
-                
+                onCloseMultiSelect = onCloseMultiSelect,
+                onNewsResourceSelected = onNewsResultSelected,
+                modifier = modifier
             )
         } else {
             EmptyState(modifier)
@@ -184,6 +185,7 @@ private fun BookmarksGrid(
     onTopicClick: (String) -> Unit,
     onCloseMultiSelect: () -> Unit,
     onRemoveSelectedFromBookMarks: () -> Unit,
+    onNewsResourceSelected: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val scrollableState = rememberLazyStaggeredGridState()
@@ -207,6 +209,8 @@ private fun BookmarksGrid(
                 onNewsResourcesCheckedChanged = { id, _ -> removeFromBookmarks(id) },
                 onNewsResourceViewed = onNewsResourceViewed,
                 onTopicClick = onTopicClick,
+                onExpandedCardClick = {},
+                onNewsResourceSelected = onNewsResourceSelected,
             )
             item(span = StaggeredGridItemSpan.FullLine) {
                 Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.safeDrawing))
@@ -360,6 +364,7 @@ private fun BookmarksGridPreview(
             onCloseMultiSelect = {},
             onRemoveSelectedFromBookMarks = {},
             modifier = Modifier,
+            onNewsResourceSelected = {},
         )
     }
 }

@@ -50,8 +50,8 @@ internal class OfflineFirstUserDataRepository @Inject constructor(
         )
     }
 
-    override suspend fun setBookmarkedNewsResources(newsResourceIds: Set<String>) {
-       niaPreferencesDataSource.setBookMarkedNewsResources(newsResourceIds)
+    override suspend fun clearBookmarkedNewsResources(newsResourceIds: Set<String>) {
+       niaPreferencesDataSource.clearBookMarkedNewsResources(newsResourceIds)
     }
 
     override suspend fun setNewsResourceViewed(newsResourceId: String, viewed: Boolean) =

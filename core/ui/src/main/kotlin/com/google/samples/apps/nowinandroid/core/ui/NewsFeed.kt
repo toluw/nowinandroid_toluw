@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import com.google.samples.apps.nowinandroid.core.analytics.LocalAnalyticsHelper
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
 import com.google.samples.apps.nowinandroid.core.model.data.UserNewsResource
+import com.google.samples.apps.nowinandroid.core.model.data.getSelectedNewsCount
 
 /**
  * An extension on [LazyListScope] defining a feed with news resources.
@@ -50,6 +51,7 @@ fun LazyStaggeredGridScope.newsFeed(
     onNewsResourceViewed: (String) -> Unit,
     onTopicClick: (String) -> Unit,
     onExpandedCardClick: () -> Unit = {},
+    onNewsResourceSelected: (String) -> Unit
 ) {
     when (feedState) {
         NewsFeedUiState.Loading -> Unit
@@ -67,13 +69,21 @@ fun LazyStaggeredGridScope.newsFeed(
                     userNewsResource = userNewsResource,
                     isBookmarked = userNewsResource.isSaved,
                     onClick = {
-                        onExpandedCardClick()
-                        analyticsHelper.logNewsResourceOpened(
-                            newsResourceId = userNewsResource.id,
-                        )
-                        launchCustomChromeTab(context, Uri.parse(userNewsResource.url), backgroundColor)
+                        if(feedState.feed.getSelectedNewsCount() > 1){
+                            onNewsResourceSelected(userNewsResource.id)
+                        }else{
+                            onExpandedCardClick()
+                            analyticsHelper.logNewsResourceOpened(
+                                newsResourceId = userNewsResource.id,
+                            )
+                            launchCustomChromeTab(context, Uri.parse(userNewsResource.url), backgroundColor)
 
-                        onNewsResourceViewed(userNewsResource.id)
+                            onNewsResourceViewed(userNewsResource.id)
+                        }
+
+                    },
+                    onLongClick = {
+                        onNewsResourceSelected(userNewsResource.id)
                     },
                     hasBeenViewed = userNewsResource.hasBeenViewed,
                     onToggleBookmark = {
@@ -83,6 +93,7 @@ fun LazyStaggeredGridScope.newsFeed(
                         )
                     },
                     onTopicClick = onTopicClick,
+
                     modifier = Modifier
                         .padding(horizontal = 8.dp)
                         .animateItem(),
@@ -132,6 +143,8 @@ private fun NewsFeedLoadingPreview() {
                 onNewsResourcesCheckedChanged = { _, _ -> },
                 onNewsResourceViewed = {},
                 onTopicClick = {},
+                onExpandedCardClick = {},
+                onNewsResourceSelected = {},
             )
         }
     }
@@ -151,6 +164,8 @@ private fun NewsFeedContentPreview(
                 onNewsResourcesCheckedChanged = { _, _ -> },
                 onNewsResourceViewed = {},
                 onTopicClick = {},
+                onExpandedCardClick = {},
+                onNewsResourceSelected = {},
             )
         }
     }

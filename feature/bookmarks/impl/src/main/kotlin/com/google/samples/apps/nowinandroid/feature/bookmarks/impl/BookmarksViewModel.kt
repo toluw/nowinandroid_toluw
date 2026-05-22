@@ -90,10 +90,20 @@ class BookmarksViewModel @Inject constructor(
 
 
 
-    fun setNewsResourceSelected(newsResourceId: String, selected: Boolean){
-        viewModelScope.launch {
-            userDataRepository.setNewsResourceSelected(newsResourceId, selected)
+    fun setNewsResourceSelected(newsResourceId: String){
+
+        if(feedUiState is NewsFeedUiState.Success){
+           val newsResource = feedUiState.feed.firstOrNull { it.id == newsResourceId }
+            newsResource?.let {
+                viewModelScope.launch {
+                    userDataRepository.setNewsResourceSelected(newsResourceId, !it.isSelected)
+                }
+            }
+
+
         }
+
+
     }
 
 
