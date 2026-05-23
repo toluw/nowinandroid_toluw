@@ -29,6 +29,7 @@ import com.google.samples.apps.nowinandroid.core.database.model.asExternalModel
 import com.google.samples.apps.nowinandroid.core.datastore.ChangeListVersions
 import com.google.samples.apps.nowinandroid.core.datastore.NiaPreferencesDataSource
 import com.google.samples.apps.nowinandroid.core.model.data.NewsResource
+import com.google.samples.apps.nowinandroid.core.model.data.updateSelectedNews
 import com.google.samples.apps.nowinandroid.core.network.NiaNetworkDataSource
 import com.google.samples.apps.nowinandroid.core.network.model.NetworkNewsResource
 import com.google.samples.apps.nowinandroid.core.notifications.Notifier
@@ -62,6 +63,7 @@ internal class OfflineFirstNewsRepository @Inject constructor(
         filterNewsIds = query.filterNewsIds ?: emptySet(),
     )
         .map { it.map(PopulatedNewsResource::asExternalModel) }
+        .map { it.updateSelectedNews(query.selectedBookmarkedNewsIds) }
 
     override suspend fun syncWith(synchronizer: Synchronizer): Boolean {
         var isFirstSync = false

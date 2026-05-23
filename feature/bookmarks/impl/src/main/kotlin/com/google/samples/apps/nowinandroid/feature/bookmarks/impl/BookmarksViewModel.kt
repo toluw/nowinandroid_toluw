@@ -95,6 +95,8 @@ class BookmarksViewModel @Inject constructor(
 
     fun setNewsResourceSelected(newsResourceId: String, select: Boolean ){
 
+              Log.d("mnews","vm selected")
+
                 viewModelScope.launch {
                     userDataRepository.setNewsResourceSelected(newsResourceId, select)
                 }

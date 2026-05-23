@@ -23,6 +23,7 @@ import com.google.samples.apps.nowinandroid.core.data.model.asExternalModel
 import com.google.samples.apps.nowinandroid.core.data.repository.NewsRepository
 import com.google.samples.apps.nowinandroid.core.data.repository.NewsResourceQuery
 import com.google.samples.apps.nowinandroid.core.model.data.NewsResource
+import com.google.samples.apps.nowinandroid.core.model.data.updateSelectedNews
 import com.google.samples.apps.nowinandroid.core.network.demo.DemoNiaNetworkDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -64,16 +65,12 @@ class FakeNewsRepository @Inject constructor(
                             .all(true::equals)
                     }
                     .map { it.asExternalModel(topics) }
-                    .map {
-                        it.copy(isSelected = shouldSelectNews(it.id, query.selectedBookmarkedNewsIds))
-                    },
+                    .updateSelectedNews(query.selectedBookmarkedNewsIds),
             )
         }.flowOn(ioDispatcher)
 
     override suspend fun syncWith(synchronizer: Synchronizer) = true
 
 
-    private fun shouldSelectNews(newsId: String, selectedBookmarkedNewsIds: Set<String>?): Boolean{
-        return selectedBookmarkedNewsIds?.contains(newsId) == true
-    }
+
 }

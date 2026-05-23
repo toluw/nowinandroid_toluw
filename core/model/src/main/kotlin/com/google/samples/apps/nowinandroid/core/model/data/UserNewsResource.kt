@@ -65,6 +65,21 @@ fun List<UserNewsResource>.getSelectedNewsCount(): Int {
 
 }
 
-fun List<UserNewsResource>.getSelectedNews(): List<UserNewsResource> {
-    return this.filter { it.isSelected }
+fun List<NewsResource>.updateSelectedNews(selectedBookmarkedNewsIds: Set<String>): List<NewsResource>{
+
+
+   return this.map {
+        it.copy(isSelected = shouldSelectNews(it.id, selectedBookmarkedNewsIds))
+    }
+
+
+}
+
+
+private fun shouldSelectNews(newsId: String, selectedBookmarkedNewsIds: Set<String>): Boolean{
+    return selectedBookmarkedNewsIds.contains(newsId)
+}
+
+fun List<UserNewsResource>.getSelectedNewsIds(): List<String> {
+    return this.filter { it.isSelected }.map { it.id }
 }

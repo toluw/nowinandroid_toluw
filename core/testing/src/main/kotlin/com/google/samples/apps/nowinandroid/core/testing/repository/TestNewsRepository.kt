@@ -21,6 +21,7 @@ import com.google.samples.apps.nowinandroid.core.data.repository.NewsRepository
 import com.google.samples.apps.nowinandroid.core.data.repository.NewsResourceQuery
 import com.google.samples.apps.nowinandroid.core.model.data.NewsResource
 import com.google.samples.apps.nowinandroid.core.model.data.Topic
+import com.google.samples.apps.nowinandroid.core.model.data.updateSelectedNews
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -46,6 +47,8 @@ class TestNewsRepository : NewsRepository {
                 result = newsResources.filter { it.id in filterNewsIds }
             }
             result
+        }.map {
+            it.updateSelectedNews(query.selectedBookmarkedNewsIds)
         }
 
     /**

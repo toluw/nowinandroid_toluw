@@ -16,6 +16,7 @@
 
 package com.google.samples.apps.nowinandroid.feature.bookmarks.impl
 
+import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.Orientation
@@ -73,6 +74,7 @@ import com.google.samples.apps.nowinandroid.core.designsystem.theme.LocalTintThe
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
 import com.google.samples.apps.nowinandroid.core.model.data.UserNewsResource
 import com.google.samples.apps.nowinandroid.core.model.data.getSelectedNewsCount
+import com.google.samples.apps.nowinandroid.core.model.data.getSelectedNewsIds
 import com.google.samples.apps.nowinandroid.core.ui.BookmarkButton
 import com.google.samples.apps.nowinandroid.core.ui.NewsFeedUiState
 import com.google.samples.apps.nowinandroid.core.ui.NewsFeedUiState.Loading
@@ -104,11 +106,12 @@ internal fun BookmarksScreen(
         clearUndoState = viewModel::clearUndoState,
         onCloseMultiSelect = viewModel::clearAllSelectedNewResource,
         onRemoveSelectedFromBookMarks = {
-         val selectedNews =   (feedState as Success).feed.map { it.id }.toSet()
+         val selectedNews =   (feedState as Success).feed.getSelectedNewsIds().toSet()
             viewModel.removeSelectedNewsFromBookMark(selectedNews)
         },
         onNewsResultSelected =  {newsResourceId: String->
             val feeds = (feedState as Success).feed
+            Log.d("mnews","compose selcted")
             val newsResource = feeds.firstOrNull {  it.id == newsResourceId }
             newsResource?.let {
                 viewModel.setNewsResourceSelected(newsResourceId = newsResourceId, !newsResource.isSelected)
