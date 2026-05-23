@@ -180,7 +180,7 @@ fun NewsResourceCardExpanded(
                 if(userNewsResource.isSelected){
                     Icon(
                         modifier = Modifier.align(alignment = Alignment.CenterStart),
-                        imageVector = NiaIcons.Add,
+                        imageVector = NiaIcons.CheckCircle,
                         contentDescription = stringResource(
                             id = string.core_ui_interests_card_follow_button_content_desc,
                         ),

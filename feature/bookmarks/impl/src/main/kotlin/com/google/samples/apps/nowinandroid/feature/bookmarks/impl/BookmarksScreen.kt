@@ -286,9 +286,7 @@ private fun MultiSelectDetails(
 
                Spacer(Modifier.width(8.dp))
 
-               BookmarkButton(isBookmarked = true, onClick = {
-
-               })
+               BookmarkButton(isBookmarked = true, onClick = onRemoveSelectedFromBookMarks)
 
 
 
