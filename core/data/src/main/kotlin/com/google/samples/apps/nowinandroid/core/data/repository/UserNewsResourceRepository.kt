@@ -34,6 +34,9 @@ interface UserNewsResourceRepository {
         ),
     ): Flow<List<UserNewsResource>>
 
+
+    suspend fun updateNewsResource(userNewsResource: UserNewsResource)
+
     /**
      * Returns available news resources for the user's followed topics as a stream.
      */

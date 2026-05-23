@@ -50,4 +50,8 @@ interface NewsRepository : Syncable {
             selectedBookmarkedNewsIds = setOf()
         ),
     ): Flow<List<NewsResource>>
+
+    suspend fun updateNewsResource(
+        newsResource: NewsResource
+    )
 }

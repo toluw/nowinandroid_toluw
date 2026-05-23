@@ -51,6 +51,10 @@ class TestNewsRepository : NewsRepository {
             it.updateSelectedNews(query.selectedBookmarkedNewsIds)
         }
 
+    override suspend fun updateNewsResource(newsResource: NewsResource) {
+        TODO("Not yet implemented")
+    }
+
     /**
      * A test-only API to allow controlling the list of news resources from tests.
      */

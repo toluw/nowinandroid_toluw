@@ -58,6 +58,24 @@ data class UserNewsResource internal constructor(
     )
 }
 
+fun UserNewsResource.updateNote(note: String): UserNewsResource{
+   return this.copy(note = note)
+}
+
+
+fun UserNewsResource.toNewResource() = NewsResource(
+    id = id,
+    title = title,
+    content = content,
+    url = url,
+    headerImageUrl = headerImageUrl,
+    publishDate = publishDate,
+    type = type,
+    topics = followableTopics.map { it.topic },
+    isSelected = isSelected,
+    note = note
+)
+
 fun List<NewsResource>.mapToUserNewsResources(userData: UserData): List<UserNewsResource> =
     map { UserNewsResource(it, userData) }
 

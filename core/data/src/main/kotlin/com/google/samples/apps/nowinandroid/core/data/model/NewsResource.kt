@@ -35,6 +35,18 @@ fun NetworkNewsResource.asEntity() = NewsResourceEntity(
     note = ""
 )
 
+
+fun NewsResource.asEntity() = NewsResourceEntity(
+    id = id,
+    title = title,
+    content = title,
+    url = title,
+    headerImageUrl = headerImageUrl,
+    publishDate = publishDate,
+    type = type,
+    note = note
+)
+
 /**
  * A shell [TopicEntity] to fulfill the foreign key constraint when inserting
  * a [NewsResourceEntity] into the DB

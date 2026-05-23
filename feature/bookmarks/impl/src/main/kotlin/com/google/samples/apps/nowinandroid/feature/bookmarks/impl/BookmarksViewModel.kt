@@ -40,7 +40,7 @@ import javax.inject.Inject
 @HiltViewModel
 class BookmarksViewModel @Inject constructor(
     private val userDataRepository: UserDataRepository,
-    userNewsResourceRepository: UserNewsResourceRepository,
+    private val userNewsResourceRepository: UserNewsResourceRepository,
 ) : ViewModel() {
 
     var shouldDisplayUndoBookmark by mutableStateOf(false)
@@ -68,6 +68,12 @@ class BookmarksViewModel @Inject constructor(
     fun setNewsResourceViewed(newsResourceId: String, viewed: Boolean) {
         viewModelScope.launch {
             userDataRepository.setNewsResourceViewed(newsResourceId, viewed)
+        }
+    }
+
+    fun updateUserNewsResource(userNewsResource: UserNewsResource){
+        viewModelScope.launch {
+            userNewsResourceRepository.updateNewsResource(userNewsResource)
         }
     }
 

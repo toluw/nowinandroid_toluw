@@ -69,6 +69,10 @@ class FakeNewsRepository @Inject constructor(
             )
         }.flowOn(ioDispatcher)
 
+    override suspend fun updateNewsResource(newsResource: NewsResource) {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun syncWith(synchronizer: Synchronizer) = true
 
 

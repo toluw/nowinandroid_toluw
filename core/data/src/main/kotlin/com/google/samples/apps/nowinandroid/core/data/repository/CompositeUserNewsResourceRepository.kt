@@ -18,6 +18,7 @@ package com.google.samples.apps.nowinandroid.core.data.repository
 
 import com.google.samples.apps.nowinandroid.core.model.data.UserNewsResource
 import com.google.samples.apps.nowinandroid.core.model.data.mapToUserNewsResources
+import com.google.samples.apps.nowinandroid.core.model.data.toNewResource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -45,6 +46,10 @@ class CompositeUserNewsResourceRepository @Inject constructor(
             .combine(userDataRepository.userData) { newsResources, userData ->
                 newsResources.mapToUserNewsResources(userData)
             }
+
+    override suspend fun updateNewsResource(userNewsResource: UserNewsResource) {
+        newsRepository.updateNewsResource(userNewsResource.toNewResource())
+    }
 
     /**
      * Returns available news resources (joined with user data) for the followed topics.
