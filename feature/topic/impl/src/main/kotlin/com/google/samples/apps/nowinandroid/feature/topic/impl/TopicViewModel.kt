@@ -142,7 +142,6 @@ private fun newsUiState(
     val newsStream: Flow<List<UserNewsResource>> = userNewsResourceRepository.observeAll(
         NewsResourceQuery(
             filterTopicIds = setOf(element = topicId),
-            filterNewsIds = TODO(),
             selectedBookmarkedNewsIds = emptySet()
         ),
     )
