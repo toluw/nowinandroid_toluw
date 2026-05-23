@@ -37,6 +37,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -98,6 +99,7 @@ fun NewsResourceCardExpanded(
     onTopicClick: (String) -> Unit,
     onLongClick: () -> Unit = {},
     modifier: Modifier = Modifier,
+    onNoteButtonClicked: (UserNewsResource) -> Unit = {}
 ) {
     val clickActionLabel = stringResource(R.string.core_ui_card_tap_action)
     val sharingLabel = stringResource(R.string.core_ui_feed_sharing)
@@ -171,6 +173,17 @@ fun NewsResourceCardExpanded(
                     Spacer(modifier = Modifier.height(14.dp))
                     NewsResourceShortDescription(userNewsResource.content)
                     Spacer(modifier = Modifier.height(12.dp))
+
+                    Spacer(modifier = Modifier.height(14.dp))
+
+                    Button(onClick = {
+                       onNoteButtonClicked(userNewsResource)
+                    }, modifier = Modifier) {
+                        Text(text = if(userNewsResource.note.isEmpty()) "Add Note" else "Upate Note")
+                    }
+
+                    Spacer(modifier = Modifier.height(14.dp))
+
                     NewsResourceTopics(
                         topics = userNewsResource.followableTopics,
                         onTopicClick = onTopicClick,

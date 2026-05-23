@@ -53,11 +53,12 @@ fun ViewNoteBottomSheet(
 
         Button(
             modifier = Modifier.fillMaxWidth(),
+            enabled = textFieldState.text.isNotEmpty(),
             onClick = {
               onNewsResourceUpdated(userNewsResource.updateNote(textFieldState.text.toString()))
             }
         ) {
-            Text("Update News")
+            Text(if(userNewsResource.note.isEmpty()) "Add Note" else "Update Note")
         }
     }
 

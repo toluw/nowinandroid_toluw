@@ -51,7 +51,8 @@ fun LazyStaggeredGridScope.newsFeed(
     onNewsResourceViewed: (String) -> Unit,
     onTopicClick: (String) -> Unit,
     onExpandedCardClick: () -> Unit = {},
-    onNewsResourceSelected: (String) -> Unit
+    onNewsResourceSelected: (String) -> Unit,
+    onNoteButtonClicked: (UserNewsResource) -> Unit = {}
 ) {
     when (feedState) {
         NewsFeedUiState.Loading -> Unit
@@ -93,6 +94,8 @@ fun LazyStaggeredGridScope.newsFeed(
                         )
                     },
                     onTopicClick = onTopicClick,
+
+                    onNoteButtonClicked = onNoteButtonClicked,
 
                     modifier = Modifier
                         .padding(horizontal = 8.dp)

@@ -45,6 +45,8 @@ class BookmarksViewModel @Inject constructor(
 
     var shouldDisplayUndoBookmark by mutableStateOf(false)
     private var lastRemovedBookmarkId: String? = null
+     var showNoteBottomSheet by mutableStateOf(false)
+    var userNewsResource: UserNewsResource? = null
 
 
     val feedUiState: StateFlow<NewsFeedUiState> =
@@ -64,6 +66,10 @@ class BookmarksViewModel @Inject constructor(
             userDataRepository.setNewsResourceBookmarked(newsResourceId, false)
         }
     }
+
+
+
+
 
     fun setNewsResourceViewed(newsResourceId: String, viewed: Boolean) {
         viewModelScope.launch {

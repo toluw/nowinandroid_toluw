@@ -42,9 +42,11 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -86,6 +88,7 @@ import com.google.samples.apps.nowinandroid.core.ui.newsFeed
 import com.google.samples.apps.nowinandroid.feature.bookmarks.api.R
 import kotlinx.coroutines.flow.map
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun BookmarksScreen(
     onTopicClick: (String) -> Unit,
@@ -94,30 +97,52 @@ internal fun BookmarksScreen(
     viewModel: BookmarksViewModel = hiltViewModel(),
 ) {
     val feedState by viewModel.feedUiState.collectAsStateWithLifecycle()
-    BookmarksScreen(
-        feedState = feedState,
-        onShowSnackbar = onShowSnackbar,
-        removeFromBookmarks = viewModel::removeFromSavedResources,
-        onNewsResourceViewed = { viewModel.setNewsResourceViewed(it, true) },
-        onTopicClick = onTopicClick,
-        modifier = modifier,
-        shouldDisplayUndoBookmark = viewModel.shouldDisplayUndoBookmark,
-        undoBookmarkRemoval = viewModel::undoBookmarkRemoval,
-        clearUndoState = viewModel::clearUndoState,
-        onCloseMultiSelect = viewModel::clearAllSelectedNewResource,
-        onRemoveSelectedFromBookMarks = {
-         val selectedNews =   (feedState as Success).feed.getSelectedNewsIds().toSet()
-            viewModel.removeSelectedNewsFromBookMark(selectedNews)
-        },
-        onNewsResultSelected =  {newsResourceId: String->
-            val feeds = (feedState as Success).feed
-            Log.d("mnews","compose selcted")
-            val newsResource = feeds.firstOrNull {  it.id == newsResourceId }
-            newsResource?.let {
-                viewModel.setNewsResourceSelected(newsResourceId = newsResourceId, !newsResource.isSelected)
+
+    Box(modifier = modifier){
+
+        BookmarksScreen(
+            feedState = feedState,
+            onShowSnackbar = onShowSnackbar,
+            removeFromBookmarks = viewModel::removeFromSavedResources,
+            onNewsResourceViewed = { viewModel.setNewsResourceViewed(it, true) },
+            onTopicClick = onTopicClick,
+            modifier = modifier,
+            shouldDisplayUndoBookmark = viewModel.shouldDisplayUndoBookmark,
+            undoBookmarkRemoval = viewModel::undoBookmarkRemoval,
+            clearUndoState = viewModel::clearUndoState,
+            onCloseMultiSelect = viewModel::clearAllSelectedNewResource,
+            onRemoveSelectedFromBookMarks = {
+                val selectedNews =   (feedState as Success).feed.getSelectedNewsIds().toSet()
+                viewModel.removeSelectedNewsFromBookMark(selectedNews)
+            },
+            onNoteButtonClicked = {
+              viewModel.userNewsResource = it
+                viewModel.showNoteBottomSheet = true
+            },
+            onNewsResultSelected =  {newsResourceId: String->
+                val feeds = (feedState as Success).feed
+                Log.d("mnews","compose selcted")
+                val newsResource = feeds.firstOrNull {  it.id == newsResourceId }
+                newsResource?.let {
+                    viewModel.setNewsResourceSelected(newsResourceId = newsResourceId, !newsResource.isSelected)
+                }
+            }
+        )
+
+        if(viewModel.showNoteBottomSheet && viewModel.userNewsResource != null){
+            ModalBottomSheet(onDismissRequest = {
+                viewModel.showNoteBottomSheet = false
+            }) {
+                ViewNoteBottomSheet(userNewsResource = viewModel.userNewsResource!!) {
+                   viewModel.updateUserNewsResource(it)
+                    viewModel.showNoteBottomSheet = false
+                }
             }
         }
-    )
+
+    }
+
+
 }
 
 /**
@@ -138,6 +163,7 @@ internal fun BookmarksScreen(
     onCloseMultiSelect: () -> Unit,
     onNewsResultSelected: (String) -> Unit,
     onRemoveSelectedFromBookMarks: () -> Unit,
+    onNoteButtonClicked: (UserNewsResource) -> Unit = {}
     
 ) {
     val bookmarkRemovedMessage = stringResource(id = R.string.feature_bookmarks_api_removed)
@@ -169,7 +195,8 @@ internal fun BookmarksScreen(
                 onRemoveSelectedFromBookMarks = onRemoveSelectedFromBookMarks,
                 onCloseMultiSelect = onCloseMultiSelect,
                 onNewsResourceSelected = onNewsResultSelected,
-                modifier = modifier
+                modifier = modifier,
+                onNoteButtonClicked = onNoteButtonClicked
             )
         } else {
             EmptyState(modifier)
@@ -199,6 +226,7 @@ private fun BookmarksGrid(
     onCloseMultiSelect: () -> Unit,
     onRemoveSelectedFromBookMarks: () -> Unit,
     onNewsResourceSelected: (String) -> Unit,
+    onNoteButtonClicked: (UserNewsResource) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val scrollableState = rememberLazyStaggeredGridState()
@@ -224,6 +252,7 @@ private fun BookmarksGrid(
                 onTopicClick = onTopicClick,
                 onExpandedCardClick = {},
                 onNewsResourceSelected = onNewsResourceSelected,
+                onNoteButtonClicked = onNoteButtonClicked
             )
             item(span = StaggeredGridItemSpan.FullLine) {
                 Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.safeDrawing))
