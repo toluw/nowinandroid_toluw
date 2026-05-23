@@ -39,6 +39,8 @@ data class NewsResourceEntity(
     @ColumnInfo(name = "publish_date")
     val publishDate: Instant,
     val type: String,
+    @ColumnInfo(defaultValue = "")
+    val note: String
 )
 
 fun NewsResourceEntity.asExternalModel() = NewsResource(
@@ -50,4 +52,5 @@ fun NewsResourceEntity.asExternalModel() = NewsResource(
     publishDate = publishDate,
     type = type,
     topics = emptyList(),
+    note = note
 )

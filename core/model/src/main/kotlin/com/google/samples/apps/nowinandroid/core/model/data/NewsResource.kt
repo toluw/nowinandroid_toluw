@@ -30,5 +30,6 @@ data class NewsResource(
     val publishDate: Instant,
     val type: String,
     val topics: List<Topic>,
-    var isSelected: Boolean = false
+    var isSelected: Boolean = false,
+    var note: String = ""
 )
