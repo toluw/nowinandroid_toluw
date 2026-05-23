@@ -32,6 +32,7 @@ fun NetworkNewsResource.asEntity() = NewsResourceEntity(
     headerImageUrl = headerImageUrl,
     publishDate = publishDate,
     type = type,
+    note = ""
 )
 
 /**

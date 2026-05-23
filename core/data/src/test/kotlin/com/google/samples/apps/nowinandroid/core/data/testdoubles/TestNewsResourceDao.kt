@@ -103,6 +103,10 @@ class TestNewsResourceDao : NewsResourceDao {
         }
     }
 
+    override suspend fun updateNewsResource(newsResourceEntity: NewsResourceEntity) {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun insertOrIgnoreTopicCrossRefEntities(
         newsResourceTopicCrossReferences: List<NewsResourceTopicCrossRef>,
     ) {

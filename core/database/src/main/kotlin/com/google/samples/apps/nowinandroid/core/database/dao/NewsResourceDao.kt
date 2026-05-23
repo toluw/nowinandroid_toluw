@@ -104,6 +104,10 @@ interface NewsResourceDao {
     suspend fun upsertNewsResources(newsResourceEntities: List<NewsResourceEntity>)
 
 
+    @Update
+    suspend fun updateNewsResource(newsResourceEntity: NewsResourceEntity)
+
+
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertOrIgnoreTopicCrossRefEntities(
