@@ -36,6 +36,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -51,6 +52,7 @@ class BookmarksViewModel @Inject constructor(
     val selectedNewsIds = MutableStateFlow<Set<String>>(
         value =setOf()
     )
+
 
 
 
@@ -75,6 +77,42 @@ class BookmarksViewModel @Inject constructor(
             shouldDisplayUndoBookmark = true
             lastRemovedBookmarkId = newsResourceId
             userDataRepository.setNewsResourceBookmarked(newsResourceId, false)
+        }
+    }
+
+
+    fun toggleSelection(newsResourceId: String){
+        selectedNewsIds.update {
+            if(it.contains(newsResourceId)){
+              it - newsResourceId
+            }else{
+                it + newsResourceId
+            }
+        }
+    }
+
+    fun initMultiSelect(newsResourceId: String){
+        isMultiSelectOn = true
+        toggleSelection(newsResourceId)
+    }
+
+    fun clearAllSelection(){
+        isMultiSelectOn = false
+        selectedNewsIds.update{
+            emptySet()
+        }
+    }
+
+
+
+
+
+
+
+
+    fun removeSaveResourceList(newsResourceIds: List<String>){
+        viewModelScope.launch {
+            userDataRepository.setNewsResourcesBookmarked(newsResourceIds, false)
         }
     }
 
