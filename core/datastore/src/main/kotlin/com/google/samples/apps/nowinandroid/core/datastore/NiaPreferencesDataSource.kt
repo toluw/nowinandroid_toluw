@@ -121,10 +121,10 @@ class NiaPreferencesDataSource @Inject constructor(
     }
 
     suspend fun setNewsResourceBookmarked(newsResourceId: String, bookmarked: Boolean) {
-        setNewsResourcesBookmarked(listOf(newsResourceId), bookmarked)
+        setNewsResourcesBookmarked(setOf(newsResourceId), bookmarked)
     }
 
-    suspend fun setNewsResourcesBookmarked(newsResourceIds: List<String>, bookmarked: Boolean) {
+    suspend fun setNewsResourcesBookmarked(newsResourceIds: Set<String>, bookmarked: Boolean) {
         try {
             userPreferences.updateData {
                 it.copy {

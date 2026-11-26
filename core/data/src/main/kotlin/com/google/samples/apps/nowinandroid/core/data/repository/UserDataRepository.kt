@@ -46,7 +46,7 @@ interface UserDataRepository {
     /**
      * Updates the bookmarked status for the given news resources
      */
-    suspend fun setNewsResourcesBookmarked(newsResourceIds: List<String>, bookmarked: Boolean)
+    suspend fun setNewsResourcesBookmarked(newsResourceIds: Set<String>, bookmarked: Boolean)
 
     /**
      * Updates the viewed status for a news resource

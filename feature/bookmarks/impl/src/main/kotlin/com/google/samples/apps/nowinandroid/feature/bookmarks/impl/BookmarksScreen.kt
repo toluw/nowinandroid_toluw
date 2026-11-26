@@ -91,6 +91,7 @@ internal fun BookmarksScreen(
         isMultiSelectOn = viewModel.isMultiSelectOn,
         numSelectedNews = selectedNewsIdsState.size,
         onCloseMultiSelect = viewModel::clearAllSelection,
+        onBookmarkSelected = viewModel::removeSelectedResources,
         onShowSnackbar = onShowSnackbar,
         removeFromBookmarks = viewModel::removeFromSavedResources,
         onNewsResourceViewed = { viewModel.setNewsResourceViewed(it, true) },
@@ -120,6 +121,7 @@ internal fun BookmarksScreen(
     undoBookmarkRemoval: () -> Unit = {},
     clearUndoState: () -> Unit = {},
     onCloseMultiSelect: () -> Unit = {},
+    onBookmarkSelected: () -> Unit = {},
 ) {
     val bookmarkRemovedMessage = stringResource(id = R.string.feature_bookmarks_api_removed)
     val undoText = stringResource(id = R.string.feature_bookmarks_api_undo)
@@ -151,6 +153,7 @@ internal fun BookmarksScreen(
                 onTopicClick,
                 modifier,
                 onCloseMultiSelect = onCloseMultiSelect,
+                onBookmarkSelected = onBookmarkSelected,
             )
         } else {
             EmptyState(modifier)
@@ -181,6 +184,7 @@ private fun BookmarksGrid(
     onTopicClick: (String) -> Unit,
     modifier: Modifier = Modifier,
     onCloseMultiSelect: () -> Unit = {},
+    onBookmarkSelected: () -> Unit = {},
 ) {
     val scrollableState = rememberLazyStaggeredGridState()
     TrackScrollJank(scrollableState = scrollableState, stateName = "bookmarks:grid")
@@ -204,6 +208,7 @@ private fun BookmarksGrid(
                 isMultiSelectOn = isMultiSelectOn,
                 numSelectedNews = numSelectedNews,
                 onCloseMultiSelect = onCloseMultiSelect,
+                onBookmarkSelected = onBookmarkSelected,
                 onNewsResourcesCheckedChanged = { id, _ -> removeFromBookmarks(id) },
                 onNewsResourceViewed = onNewsResourceViewed,
                 onTopicClick = onTopicClick,
@@ -214,7 +219,7 @@ private fun BookmarksGrid(
         }
         val itemsAvailable = when (feedState) {
             Loading -> 1
-            is Success -> feedState.feed.size + if (isMultiSelectOn) 1 else 0
+            is Success -> feedState.feed.size
         }
         val scrollbarState = scrollableState.scrollbarState(
             itemsAvailable = itemsAvailable,

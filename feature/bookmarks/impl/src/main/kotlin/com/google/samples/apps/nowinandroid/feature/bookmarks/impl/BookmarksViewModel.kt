@@ -83,6 +83,8 @@ class BookmarksViewModel @Inject constructor(
     }
 
 
+
+
     fun toggleSelection(newsResourceId: String){
         _selectedNewsIds.update {
             if(it.contains(newsResourceId)){
@@ -106,15 +108,13 @@ class BookmarksViewModel @Inject constructor(
     }
 
 
+    fun removeSelectedResources() {
+        val selectedIds = selectedNewsId.value
+        if (selectedIds.isEmpty()) return
 
-
-
-
-
-
-    fun removeSaveResourceList(newsResourceIds: List<String>){
+        clearAllSelection()
         viewModelScope.launch {
-            userDataRepository.setNewsResourcesBookmarked(newsResourceIds, false)
+            userDataRepository.setNewsResourcesBookmarked(selectedIds, false)
         }
     }
 

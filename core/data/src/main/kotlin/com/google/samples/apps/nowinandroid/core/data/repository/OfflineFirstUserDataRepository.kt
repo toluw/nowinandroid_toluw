@@ -50,7 +50,7 @@ internal class OfflineFirstUserDataRepository @Inject constructor(
         )
     }
 
-    override suspend fun setNewsResourcesBookmarked(newsResourceIds: List<String>, bookmarked: Boolean) {
+    override suspend fun setNewsResourcesBookmarked(newsResourceIds: Set<String>, bookmarked: Boolean) {
         niaPreferencesDataSource.setNewsResourcesBookmarked(newsResourceIds, bookmarked)
         newsResourceIds.forEach { newsResourceId ->
             analyticsHelper.logNewsResourceBookmarkToggled(

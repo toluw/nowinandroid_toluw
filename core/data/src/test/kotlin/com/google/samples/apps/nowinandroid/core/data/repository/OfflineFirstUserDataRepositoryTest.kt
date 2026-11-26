@@ -159,14 +159,14 @@ class OfflineFirstUserDataRepositoryTest {
     fun bookmarkNewsResources_updatesOnlyRequestedResources() = testScope.runTest {
         subject.setNewsResourceBookmarked(newsResourceId = "0", bookmarked = true)
 
-        subject.setNewsResourcesBookmarked(listOf("1", "2", "1"), bookmarked = true)
+        subject.setNewsResourcesBookmarked(setOf("1", "2"), bookmarked = true)
         assertEquals(setOf("0", "1", "2"), subject.userData.first().bookmarkedNewsResources)
 
-        subject.setNewsResourcesBookmarked(listOf("1", "2", "missing"), bookmarked = false)
+        subject.setNewsResourcesBookmarked(setOf("1", "2", "missing"), bookmarked = false)
         assertEquals(setOf("0"), subject.userData.first().bookmarkedNewsResources)
 
-        subject.setNewsResourcesBookmarked(emptyList(), bookmarked = true)
-        subject.setNewsResourcesBookmarked(emptyList(), bookmarked = false)
+        subject.setNewsResourcesBookmarked(emptySet(), bookmarked = true)
+        subject.setNewsResourcesBookmarked(emptySet(), bookmarked = false)
         assertEquals(setOf("0"), subject.userData.first().bookmarkedNewsResources)
 
         assertEquals(

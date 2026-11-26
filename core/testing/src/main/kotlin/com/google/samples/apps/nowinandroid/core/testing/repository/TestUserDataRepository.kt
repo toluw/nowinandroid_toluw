@@ -73,12 +73,12 @@ class TestUserDataRepository : UserDataRepository {
         }
     }
 
-    override suspend fun setNewsResourcesBookmarked(newsResourceIds: List<String>, bookmarked: Boolean) {
+    override suspend fun setNewsResourcesBookmarked(newsResourceIds: Set<String>, bookmarked: Boolean) {
         currentUserData.let { current ->
             val bookmarkedNews = if (bookmarked) {
                 current.bookmarkedNewsResources + newsResourceIds
             } else {
-                current.bookmarkedNewsResources - newsResourceIds.toSet()
+                current.bookmarkedNewsResources - newsResourceIds
             }
 
             _userData.tryEmit(current.copy(bookmarkedNewsResources = bookmarkedNews))

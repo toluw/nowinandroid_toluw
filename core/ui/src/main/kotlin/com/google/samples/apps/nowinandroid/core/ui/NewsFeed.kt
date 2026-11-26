@@ -65,6 +65,7 @@ fun LazyStaggeredGridScope.newsFeed(
     onNewsResourceViewed: (String) -> Unit,
     onTopicClick: (String) -> Unit,
     onCloseMultiSelect: () -> Unit = {},
+    onBookmarkSelected: () -> Unit = {},
     onExpandedCardClick: () -> Unit = {},
 ) {
     if (isMultiSelectOn) {
@@ -81,11 +82,22 @@ fun LazyStaggeredGridScope.newsFeed(
                         text = stringResource(R.string.core_ui_news_selected, numSelectedNews),
                         style = MaterialTheme.typography.titleMedium,
                     )
-                    IconButton(onClick = onCloseMultiSelect) {
-                        Icon(
-                            imageVector = NiaIcons.Close,
-                            contentDescription = stringResource(R.string.core_ui_close_multi_select),
-                        )
+                    Row {
+                        IconButton(
+                            onClick = onBookmarkSelected,
+                            enabled = numSelectedNews > 0,
+                        ) {
+                            Icon(
+                                imageVector = NiaIcons.Bookmark,
+                                contentDescription = stringResource(R.string.core_ui_unbookmark),
+                            )
+                        }
+                        IconButton(onClick = onCloseMultiSelect) {
+                            Icon(
+                                imageVector = NiaIcons.Close,
+                                contentDescription = stringResource(R.string.core_ui_close_multi_select),
+                            )
+                        }
                     }
                 }
             }
