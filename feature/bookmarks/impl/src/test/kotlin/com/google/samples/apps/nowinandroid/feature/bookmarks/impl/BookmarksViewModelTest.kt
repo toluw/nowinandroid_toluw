@@ -101,7 +101,7 @@ class BookmarksViewModelTest {
         userDataRepository.setNewsResourceBookmarked(newsResourcesTestData[0].id, true)
         val itemBeforeViewed = viewModel.feedUiState.value
         assertIs<Success>(itemBeforeViewed)
-        assertFalse(itemBeforeViewed.feed.first().hasBeenViewed)
+        assertFalse(itemBeforeViewed.feed.first().userNewsResource.hasBeenViewed)
 
         // When
         viewModel.setNewsResourceViewed(newsResourcesTestData[0].id, true)
@@ -109,7 +109,7 @@ class BookmarksViewModelTest {
         // Then
         val item = viewModel.feedUiState.value
         assertIs<Success>(item)
-        assertTrue(item.feed.first().hasBeenViewed)
+        assertTrue(item.feed.first().userNewsResource.hasBeenViewed)
     }
 
     @Test

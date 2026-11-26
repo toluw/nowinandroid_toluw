@@ -34,6 +34,7 @@ import androidx.compose.ui.test.performScrollToNode
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.testing.TestLifecycleOwner
+import com.google.samples.apps.nowinandroid.core.model.data.SelectionUserNewsResource
 import com.google.samples.apps.nowinandroid.core.testing.data.userNewsResourcesTestData
 import com.google.samples.apps.nowinandroid.core.ui.NewsFeedUiState
 import com.google.samples.apps.nowinandroid.feature.bookmarks.api.R
@@ -75,7 +76,9 @@ class BookmarksScreenTest {
         composeTestRule.setContent {
             BookmarksScreen(
                 feedState = NewsFeedUiState.Success(
-                    userNewsResourcesTestData.take(2),
+                    userNewsResourcesTestData.take(2).map {
+                        SelectionUserNewsResource(it, isSelected = false)
+                    },
                 ),
                 onShowSnackbar = { _, _ -> false },
                 removeFromBookmarks = {},
@@ -116,7 +119,9 @@ class BookmarksScreenTest {
         composeTestRule.setContent {
             BookmarksScreen(
                 feedState = NewsFeedUiState.Success(
-                    userNewsResourcesTestData.take(2),
+                    userNewsResourcesTestData.take(2).map {
+                        SelectionUserNewsResource(it, isSelected = false)
+                    },
                 ),
                 onShowSnackbar = { _, _ -> false },
                 removeFromBookmarks = { newsResourceId ->
