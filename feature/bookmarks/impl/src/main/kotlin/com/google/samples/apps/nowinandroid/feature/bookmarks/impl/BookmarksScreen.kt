@@ -85,8 +85,12 @@ internal fun BookmarksScreen(
     viewModel: BookmarksViewModel = hiltViewModel(),
 ) {
     val feedState by viewModel.feedUiState.collectAsStateWithLifecycle()
+    val selectedNewsIdsState by viewModel.selectedNewsId.collectAsStateWithLifecycle()
     BookmarksScreen(
         feedState = feedState,
+        isMultiSelectOn = viewModel.isMultiSelectOn,
+        numSelectedNews = selectedNewsIdsState.size,
+        onCloseMultiSelect = viewModel::clearAllSelection,
         onShowSnackbar = onShowSnackbar,
         removeFromBookmarks = viewModel::removeFromSavedResources,
         onNewsResourceViewed = { viewModel.setNewsResourceViewed(it, true) },
@@ -105,6 +109,8 @@ internal fun BookmarksScreen(
 @Composable
 internal fun BookmarksScreen(
     feedState: NewsFeedUiState,
+    isMultiSelectOn: Boolean = false,
+    numSelectedNews: Int = 0,
     onShowSnackbar: suspend (String, String?) -> Boolean,
     removeFromBookmarks: (String) -> Unit,
     onNewsResourceViewed: (String) -> Unit,
@@ -113,6 +119,7 @@ internal fun BookmarksScreen(
     shouldDisplayUndoBookmark: Boolean = false,
     undoBookmarkRemoval: () -> Unit = {},
     clearUndoState: () -> Unit = {},
+    onCloseMultiSelect: () -> Unit = {},
 ) {
     val bookmarkRemovedMessage = stringResource(id = R.string.feature_bookmarks_api_removed)
     val undoText = stringResource(id = R.string.feature_bookmarks_api_undo)
@@ -134,13 +141,16 @@ internal fun BookmarksScreen(
 
     when (feedState) {
         Loading -> LoadingState(modifier)
-        is Success -> if (feedState.feed.isNotEmpty()) {
+        is Success -> if (feedState.feed.isNotEmpty() || isMultiSelectOn) {
             BookmarksGrid(
                 feedState,
+                isMultiSelectOn,
+                numSelectedNews,
                 removeFromBookmarks,
                 onNewsResourceViewed,
                 onTopicClick,
                 modifier,
+                onCloseMultiSelect = onCloseMultiSelect,
             )
         } else {
             EmptyState(modifier)
@@ -164,10 +174,13 @@ private fun LoadingState(modifier: Modifier = Modifier) {
 @Composable
 private fun BookmarksGrid(
     feedState: NewsFeedUiState,
+    isMultiSelectOn: Boolean,
+    numSelectedNews: Int,
     removeFromBookmarks: (String) -> Unit,
     onNewsResourceViewed: (String) -> Unit,
     onTopicClick: (String) -> Unit,
     modifier: Modifier = Modifier,
+    onCloseMultiSelect: () -> Unit = {},
 ) {
     val scrollableState = rememberLazyStaggeredGridState()
     TrackScrollJank(scrollableState = scrollableState, stateName = "bookmarks:grid")
@@ -187,6 +200,10 @@ private fun BookmarksGrid(
         ) {
             newsFeed(
                 feedState = feedState,
+                isBookMarkScreen = true,
+                isMultiSelectOn = isMultiSelectOn,
+                numSelectedNews = numSelectedNews,
+                onCloseMultiSelect = onCloseMultiSelect,
                 onNewsResourcesCheckedChanged = { id, _ -> removeFromBookmarks(id) },
                 onNewsResourceViewed = onNewsResourceViewed,
                 onTopicClick = onTopicClick,
@@ -197,7 +214,7 @@ private fun BookmarksGrid(
         }
         val itemsAvailable = when (feedState) {
             Loading -> 1
-            is Success -> feedState.feed.size
+            is Success -> feedState.feed.size + if (isMultiSelectOn) 1 else 0
         }
         val scrollbarState = scrollableState.scrollbarState(
             itemsAvailable = itemsAvailable,
@@ -278,6 +295,8 @@ private fun BookmarksGridPreview(
             removeFromBookmarks = {},
             onNewsResourceViewed = {},
             onTopicClick = {},
+            isMultiSelectOn = true,
+            numSelectedNews = 3
         )
     }
 }

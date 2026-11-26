@@ -32,6 +32,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
@@ -49,15 +50,16 @@ class BookmarksViewModel @Inject constructor(
     var shouldDisplayUndoBookmark by mutableStateOf(false)
     private var lastRemovedBookmarkId: String? = null
     var isMultiSelectOn by mutableStateOf(false)
-    val selectedNewsIds = MutableStateFlow<Set<String>>(
+    val _selectedNewsIds = MutableStateFlow<Set<String>>(
         value =setOf()
     )
+    val selectedNewsId = _selectedNewsIds.asStateFlow()
 
 
 
 
     val feedUiState: StateFlow<NewsFeedUiState> =
-        combine(userNewsResourceRepository.observeAllBookmarked(),  selectedNewsIds){userNews, selectedIds ->
+        combine(userNewsResourceRepository.observeAllBookmarked(),  _selectedNewsIds){userNews, selectedIds ->
             userNews.map {
                 SelectionUserNewsResource(
                     userNewsResource = it,
@@ -82,7 +84,7 @@ class BookmarksViewModel @Inject constructor(
 
 
     fun toggleSelection(newsResourceId: String){
-        selectedNewsIds.update {
+        _selectedNewsIds.update {
             if(it.contains(newsResourceId)){
               it - newsResourceId
             }else{
@@ -98,7 +100,7 @@ class BookmarksViewModel @Inject constructor(
 
     fun clearAllSelection(){
         isMultiSelectOn = false
-        selectedNewsIds.update{
+        _selectedNewsIds.update{
             emptySet()
         }
     }

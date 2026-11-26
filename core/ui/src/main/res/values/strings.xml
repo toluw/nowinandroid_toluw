@@ -18,6 +18,8 @@
     <string name="core_ui_bookmark">Bookmark</string>
     <string name="core_ui_unbookmark">Unbookmark</string>
     <string name="core_ui_back">Back</string>
+    <string name="core_ui_news_selected">%1$d selected</string>
+    <string name="core_ui_close_multi_select">Close selection mode</string>
 
     <string name="core_ui_unread_resource_dot_content_description">Unread</string>
 
