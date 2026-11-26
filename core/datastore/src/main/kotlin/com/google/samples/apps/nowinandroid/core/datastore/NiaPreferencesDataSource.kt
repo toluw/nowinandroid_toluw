@@ -121,13 +121,19 @@ class NiaPreferencesDataSource @Inject constructor(
     }
 
     suspend fun setNewsResourceBookmarked(newsResourceId: String, bookmarked: Boolean) {
+        setNewsResourcesBookmarked(listOf(newsResourceId), bookmarked)
+    }
+
+    suspend fun setNewsResourcesBookmarked(newsResourceIds: List<String>, bookmarked: Boolean) {
         try {
             userPreferences.updateData {
                 it.copy {
-                    if (bookmarked) {
-                        bookmarkedNewsResourceIds.put(newsResourceId, true)
-                    } else {
-                        bookmarkedNewsResourceIds.remove(newsResourceId)
+                    newsResourceIds.forEach { newsResourceId ->
+                        if (bookmarked) {
+                            bookmarkedNewsResourceIds.put(newsResourceId, true)
+                        } else {
+                            bookmarkedNewsResourceIds.remove(newsResourceId)
+                        }
                     }
                 }
             }
