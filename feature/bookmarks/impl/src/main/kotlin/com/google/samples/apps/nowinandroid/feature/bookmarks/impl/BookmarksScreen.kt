@@ -100,6 +100,8 @@ internal fun BookmarksScreen(
         shouldDisplayUndoBookmark = viewModel.shouldDisplayUndoBookmark,
         undoBookmarkRemoval = viewModel::undoBookmarkRemoval,
         clearUndoState = viewModel::clearUndoState,
+        onInitMultiSelect = viewModel::initMultiSelect,
+        onToggleSelection = viewModel::toggleSelection
     )
 }
 
@@ -122,6 +124,8 @@ internal fun BookmarksScreen(
     clearUndoState: () -> Unit = {},
     onCloseMultiSelect: () -> Unit = {},
     onBookmarkSelected: () -> Unit = {},
+    onInitMultiSelect: (String) -> Unit = {},
+    onToggleSelection: (String) -> Unit = {}
 ) {
     val bookmarkRemovedMessage = stringResource(id = R.string.feature_bookmarks_api_removed)
     val undoText = stringResource(id = R.string.feature_bookmarks_api_undo)
@@ -154,6 +158,9 @@ internal fun BookmarksScreen(
                 modifier,
                 onCloseMultiSelect = onCloseMultiSelect,
                 onBookmarkSelected = onBookmarkSelected,
+                onInitMultiSelect = onInitMultiSelect,
+                onToggleSelection = onToggleSelection
+
             )
         } else {
             EmptyState(modifier)
@@ -185,6 +192,8 @@ private fun BookmarksGrid(
     modifier: Modifier = Modifier,
     onCloseMultiSelect: () -> Unit = {},
     onBookmarkSelected: () -> Unit = {},
+    onInitMultiSelect: (String) -> Unit = {},
+    onToggleSelection: (String) -> Unit = {}
 ) {
     val scrollableState = rememberLazyStaggeredGridState()
     TrackScrollJank(scrollableState = scrollableState, stateName = "bookmarks:grid")
@@ -212,6 +221,9 @@ private fun BookmarksGrid(
                 onNewsResourcesCheckedChanged = { id, _ -> removeFromBookmarks(id) },
                 onNewsResourceViewed = onNewsResourceViewed,
                 onTopicClick = onTopicClick,
+                onInitMultiSelect = onInitMultiSelect,
+                onToggleSelection = onToggleSelection
+
             )
             item(span = StaggeredGridItemSpan.FullLine) {
                 Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.safeDrawing))

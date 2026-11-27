@@ -20,9 +20,11 @@ import android.content.ClipData
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.view.View
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.draganddrop.dragAndDropSource
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -51,6 +53,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draganddrop.DragAndDropTransferData
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -59,8 +62,9 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.onClick
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
@@ -89,12 +93,14 @@ import java.util.Locale
 @Composable
 fun NewsResourceCardExpanded(
     userNewsResource: UserNewsResource,
+    isSelected: Boolean = false,
     isBookmarked: Boolean,
     hasBeenViewed: Boolean,
     onToggleBookmark: () -> Unit,
     onClick: () -> Unit,
     onTopicClick: (String) -> Unit,
     modifier: Modifier = Modifier,
+    onLongClick: (() -> Unit)? = null,
 ) {
     val clickActionLabel = stringResource(R.string.core_ui_card_tap_action)
     val sharingLabel = stringResource(R.string.core_ui_feed_sharing)
@@ -110,16 +116,30 @@ fun NewsResourceCardExpanded(
         0
     }
 
+    val cardShape = RoundedCornerShape(16.dp)
     Card(
-        onClick = onClick,
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        // Use custom label for accessibility services to communicate button's action to user.
-        // Pass null for action to only override the label and not the actual action.
+        shape = cardShape,
+        colors = CardDefaults.cardColors(
+            containerColor = if (isSelected) {
+                MaterialTheme.colorScheme.secondaryContainer
+            } else {
+                MaterialTheme.colorScheme.surface
+            },
+        ),
+        border = if (isSelected) {
+            BorderStroke(2.dp, MaterialTheme.colorScheme.primary)
+        } else {
+            null
+        },
         modifier = modifier
-            .semantics {
-                onClick(label = clickActionLabel, action = null)
-            }
+            .clip(cardShape)
+            .combinedClickable(
+                onClickLabel = clickActionLabel,
+                role = Role.Button,
+                onLongClick = onLongClick,
+                onClick = onClick,
+            )
+            .semantics { selected = isSelected }
             .testTag("newsResourceCard:${userNewsResource.id}"),
     ) {
         Column {
@@ -134,25 +154,35 @@ fun NewsResourceCardExpanded(
                 Column {
                     Spacer(modifier = Modifier.height(12.dp))
                     Row {
+                        // Drag sharing also starts with a long press.
+                        val dragModifier = if (onLongClick == null) {
+                            Modifier.dragAndDropSource { _ ->
+                                DragAndDropTransferData(
+                                    ClipData.newPlainText(sharingLabel, sharingContent),
+                                    flags = dragAndDropFlags,
+                                )
+                            }
+                        } else {
+                            Modifier
+                        }
                         NewsResourceTitle(
                             userNewsResource.title,
-                            modifier = Modifier
-                                .fillMaxWidth((.8f))
-                                .dragAndDropSource { _ ->
-                                    DragAndDropTransferData(
-                                        ClipData.newPlainText(
-                                            sharingLabel,
-                                            sharingContent,
-                                        ),
-                                        flags = dragAndDropFlags,
-                                    )
-                                },
+                            modifier = Modifier.fillMaxWidth(.8f).then(dragModifier),
                         )
                         Spacer(modifier = Modifier.weight(1f))
                         BookmarkButton(isBookmarked, onToggleBookmark)
                     }
                     Spacer(modifier = Modifier.height(14.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
+                        if (isSelected) {
+                            Icon(
+                                imageVector = NiaIcons.Check,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(24.dp),
+                            )
+                            Spacer(modifier = Modifier.size(8.dp))
+                        }
                         if (!hasBeenViewed) {
                             NotificationDot(
                                 color = MaterialTheme.colorScheme.tertiary,
