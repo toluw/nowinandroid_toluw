@@ -104,6 +104,7 @@ class NetworkEntityTest {
             publishDate = Instant.fromEpochMilliseconds(1),
             type = "Article 📚",
             topics = listOf("1", "2"),
+            note = "Test news note",
         )
 
         val networkTopics = listOf(
@@ -134,6 +135,7 @@ class NetworkEntityTest {
             publishDate = Instant.fromEpochMilliseconds(1),
             type = "Article 📚",
             topics = networkTopics.map(NetworkTopic::asExternalModel),
+            note = "Test news note",
         )
         assertEquals(expected, networkNewsResource.asExternalModel(networkTopics))
     }

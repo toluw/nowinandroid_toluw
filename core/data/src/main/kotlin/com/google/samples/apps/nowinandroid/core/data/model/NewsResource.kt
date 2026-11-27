@@ -32,6 +32,7 @@ fun NetworkNewsResource.asEntity() = NewsResourceEntity(
     headerImageUrl = headerImageUrl,
     publishDate = publishDate,
     type = type,
+    note = note,
 )
 
 /**
@@ -70,4 +71,5 @@ fun NetworkNewsResource.asExternalModel(topics: List<NetworkTopic>) =
         topics = topics
             .filter { networkTopic -> this.topics.contains(networkTopic.id) }
             .map(NetworkTopic::asExternalModel),
+        note = note,
     )

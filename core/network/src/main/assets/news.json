@@ -1847,6 +1847,7 @@
     "headerImageUrl": "https://developer.android.com/images/hero-assets/android-basics-compose.svg",
     "publishDate": "2022-05-04T23:00:00.000Z",
     "type": "Codelab",
+    "note": "This course is designed for beginners.",
     "topics": [
       "2",
       "3",

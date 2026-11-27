@@ -35,4 +35,5 @@ data class NetworkNewsResource(
     val publishDate: Instant,
     val type: String,
     val topics: List<String> = emptyList(),
+    val note: String = "",
 )

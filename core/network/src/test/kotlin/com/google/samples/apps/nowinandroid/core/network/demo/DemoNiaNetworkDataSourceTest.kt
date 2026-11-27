@@ -81,8 +81,10 @@ class DemoNiaNetworkDataSourceTest {
                 ).toInstant(TimeZone.UTC),
                 type = "Codelab",
                 topics = listOf("2", "3", "10"),
+                note = "This course is designed for beginners.",
             ),
             subject.getNewsResources().find { it.id == "125" },
         )
+        assertEquals("", subject.getNewsResources().first { it.id == "1" }.note)
     }
 }

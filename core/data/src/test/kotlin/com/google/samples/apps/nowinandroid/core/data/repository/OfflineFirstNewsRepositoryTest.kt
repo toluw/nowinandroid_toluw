@@ -148,6 +148,11 @@ class OfflineFirstNewsRepositoryTest {
                 newsResourcesFromDb.map(NewsResource::id).sorted(),
             )
 
+            assertEquals(
+                network.getNewsResources().associate { it.id to it.note },
+                subject.getNewsResources().first().associate { it.id to it.note },
+            )
+
             // After sync version should be updated
             assertEquals(
                 expected = network.latestChangeListVersion(CollectionType.NewsResources),

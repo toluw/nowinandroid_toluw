@@ -45,6 +45,7 @@ class UserNewsResourceTest {
             headerImageUrl = "Test image URL",
             publishDate = Clock.System.now(),
             type = "Article 📚",
+            note = "Test news note",
             topics = listOf(
                 Topic(
                     id = "T1",
@@ -81,6 +82,7 @@ class UserNewsResourceTest {
         assertEquals(newsResource1.id, userNewsResource.id)
         assertEquals(newsResource1.title, userNewsResource.title)
         assertEquals(newsResource1.content, userNewsResource.content)
+        assertEquals(newsResource1.note, userNewsResource.note)
         assertEquals(newsResource1.url, userNewsResource.url)
         assertEquals(newsResource1.headerImageUrl, userNewsResource.headerImageUrl)
         assertEquals(newsResource1.publishDate, userNewsResource.publishDate)
