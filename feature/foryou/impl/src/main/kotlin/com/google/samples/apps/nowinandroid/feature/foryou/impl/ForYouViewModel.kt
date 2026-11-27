@@ -27,6 +27,8 @@ import com.google.samples.apps.nowinandroid.core.data.repository.UserDataReposit
 import com.google.samples.apps.nowinandroid.core.data.repository.UserNewsResourceRepository
 import com.google.samples.apps.nowinandroid.core.data.util.SyncManager
 import com.google.samples.apps.nowinandroid.core.domain.GetFollowableTopicsUseCase
+import com.google.samples.apps.nowinandroid.core.model.data.SelectionUserNewsResource
+import com.google.samples.apps.nowinandroid.core.model.data.UserNewsResource
 import com.google.samples.apps.nowinandroid.core.notifications.DEEP_LINK_NEWS_RESOURCE_ID_KEY
 import com.google.samples.apps.nowinandroid.core.ui.NewsFeedUiState
 import com.google.samples.apps.nowinandroid.feature.foryou.api.navigation.ForYouNavKey
@@ -89,6 +91,13 @@ class ForYouViewModel @AssistedInject constructor(
 
     val feedState: StateFlow<NewsFeedUiState> =
         userNewsResourceRepository.observeAllForFollowedTopics()
+            .map{newList ->
+
+                newList.map {
+                    SelectionUserNewsResource(it,false)
+                }
+
+            }
             .map(NewsFeedUiState::Success)
             .stateIn(
                 scope = viewModelScope,

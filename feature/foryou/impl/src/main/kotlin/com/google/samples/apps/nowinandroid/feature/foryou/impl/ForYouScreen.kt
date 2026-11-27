@@ -94,6 +94,7 @@ import com.google.samples.apps.nowinandroid.core.designsystem.component.scrollba
 import com.google.samples.apps.nowinandroid.core.designsystem.component.scrollbar.scrollbarState
 import com.google.samples.apps.nowinandroid.core.designsystem.icon.NiaIcons
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
+import com.google.samples.apps.nowinandroid.core.model.data.SelectionUserNewsResource
 import com.google.samples.apps.nowinandroid.core.model.data.UserNewsResource
 import com.google.samples.apps.nowinandroid.core.ui.DevicePreviews
 import com.google.samples.apps.nowinandroid.core.ui.NewsFeedUiState
@@ -508,7 +509,9 @@ fun ForYouScreenPopulatedFeed(
             isSyncing = false,
             onboardingUiState = OnboardingUiState.NotShown,
             feedState = NewsFeedUiState.Success(
-                feed = userNewsResources,
+                feed = userNewsResources.map {
+                    SelectionUserNewsResource(it,false)
+                },
             ),
             onTopicCheckedChanged = { _, _ -> },
             saveFollowedTopics = {},
@@ -530,7 +533,9 @@ fun ForYouScreenOfflinePopulatedFeed(
             isSyncing = false,
             onboardingUiState = OnboardingUiState.NotShown,
             feedState = NewsFeedUiState.Success(
-                feed = userNewsResources,
+                feed = userNewsResources.map {
+                    SelectionUserNewsResource(it,false)
+                },
             ),
             onTopicCheckedChanged = { _, _ -> },
             saveFollowedTopics = {},
@@ -555,7 +560,9 @@ fun ForYouScreenTopicSelection(
                     .distinctBy { it.topic.id },
             ),
             feedState = NewsFeedUiState.Success(
-                feed = userNewsResources,
+                feed = userNewsResources.map {
+                    SelectionUserNewsResource(it,false)
+                },
             ),
             onTopicCheckedChanged = { _, _ -> },
             saveFollowedTopics = {},
@@ -594,7 +601,9 @@ fun ForYouScreenPopulatedAndLoading(
             isSyncing = true,
             onboardingUiState = OnboardingUiState.Loading,
             feedState = NewsFeedUiState.Success(
-                feed = userNewsResources,
+                feed = userNewsResources.map {
+                    SelectionUserNewsResource(it,false)
+                },
             ),
             onTopicCheckedChanged = { _, _ -> },
             saveFollowedTopics = {},
