@@ -92,6 +92,10 @@ class TestNewsResourceDao : NewsResourceDao {
                 result.map { it.entity.id }
             }
 
+    override suspend fun upsertNewsResource(newsResourceEntity: NewsResourceEntity) {
+        upsertNewsResources(listOf(newsResourceEntity))
+    }
+
     override suspend fun upsertNewsResources(newsResourceEntities: List<NewsResourceEntity>) {
         entitiesStateFlow.update { oldValues ->
             // New values come first so they overwrite old values

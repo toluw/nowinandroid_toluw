@@ -24,6 +24,17 @@ import com.google.samples.apps.nowinandroid.core.network.model.NetworkNewsResour
 import com.google.samples.apps.nowinandroid.core.network.model.NetworkTopic
 import com.google.samples.apps.nowinandroid.core.network.model.asExternalModel
 
+fun NewsResource.asEntity() = NewsResourceEntity(
+    id = id,
+    title = title,
+    content = content,
+    url = url,
+    headerImageUrl = headerImageUrl,
+    publishDate = publishDate,
+    type = type,
+    note = note,
+)
+
 fun NetworkNewsResource.asEntity() = NewsResourceEntity(
     id = id,
     title = title,

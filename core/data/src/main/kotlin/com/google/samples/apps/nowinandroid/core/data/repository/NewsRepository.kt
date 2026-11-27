@@ -47,4 +47,9 @@ interface NewsRepository : Syncable {
             filterNewsIds = null,
         ),
     ): Flow<List<NewsResource>>
+
+    /**
+     * Inserts or updates the local news resource by ID. Topic associations are managed separately.
+     */
+    suspend fun updateNewsResource(newsResource: NewsResource)
 }

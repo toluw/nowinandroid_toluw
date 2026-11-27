@@ -21,21 +21,21 @@ import com.google.samples.apps.nowinandroid.core.data.repository.NewsRepository
 import com.google.samples.apps.nowinandroid.core.data.repository.NewsResourceQuery
 import com.google.samples.apps.nowinandroid.core.model.data.NewsResource
 import com.google.samples.apps.nowinandroid.core.model.data.Topic
-import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
 
 class TestNewsRepository : NewsRepository {
 
     /**
-     * The backing hot flow for the list of topics ids for testing.
+     * Emits once a test seeds or updates news resources.
      */
-    private val newsResourcesFlow: MutableSharedFlow<List<NewsResource>> =
-        MutableSharedFlow(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+    private val newsResourcesFlow = MutableStateFlow<List<NewsResource>?>(null)
 
     override fun getNewsResources(query: NewsResourceQuery): Flow<List<NewsResource>> =
-        newsResourcesFlow.map { newsResources ->
+        newsResourcesFlow.filterNotNull().map { newsResources ->
             var result = newsResources
             query.filterTopicIds?.let { filterTopicIds ->
                 result = newsResources.filter {
@@ -52,7 +52,16 @@ class TestNewsRepository : NewsRepository {
      * A test-only API to allow controlling the list of news resources from tests.
      */
     fun sendNewsResources(newsResources: List<NewsResource>) {
-        newsResourcesFlow.tryEmit(newsResources)
+        newsResourcesFlow.value = newsResources
+    }
+
+    override suspend fun updateNewsResource(newsResource: NewsResource) {
+        newsResourcesFlow.update { current ->
+            val resources = current.orEmpty().associateBy(NewsResource::id).toMutableMap()
+            val topics = resources[newsResource.id]?.topics.orEmpty()
+            resources[newsResource.id] = newsResource.copy(topics = topics)
+            resources.values.toList()
+        }
     }
 
     override suspend fun syncWith(synchronizer: Synchronizer) = true

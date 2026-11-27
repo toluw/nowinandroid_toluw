@@ -63,6 +63,10 @@ internal class OfflineFirstNewsRepository @Inject constructor(
     )
         .map { it.map(PopulatedNewsResource::asExternalModel) }
 
+    override suspend fun updateNewsResource(newsResource: NewsResource) {
+        newsResourceDao.upsertNewsResource(newsResource.asEntity())
+    }
+
     override suspend fun syncWith(synchronizer: Synchronizer): Boolean {
         var isFirstSync = false
         return synchronizer.changeListSync(

@@ -96,6 +96,9 @@ interface NewsResourceDao {
         filterNewsIds: Set<String> = emptySet(),
     ): Flow<List<String>>
 
+    @Upsert
+    suspend fun upsertNewsResource(newsResourceEntity: NewsResourceEntity)
+
     /**
      * Inserts or updates [newsResourceEntities] in the db under the specified primary keys
      */

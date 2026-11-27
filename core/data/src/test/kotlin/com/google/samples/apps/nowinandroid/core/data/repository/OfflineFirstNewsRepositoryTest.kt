@@ -100,6 +100,19 @@ class OfflineFirstNewsRepositoryTest {
         }
 
     @Test
+    fun updateNewsResource_insertsAndUpdatesTheLocalResource() = testScope.runTest {
+        val original = network.getNewsResources().first().asEntity().asExternalModel()
+        val query = NewsResourceQuery(filterNewsIds = setOf(original.id))
+
+        subject.updateNewsResource(original)
+        assertEquals(listOf(original), subject.getNewsResources(query).first())
+
+        val updated = original.copy(note = "Updated note")
+        subject.updateNewsResource(updated)
+        assertEquals(listOf(updated), subject.getNewsResources(query).first())
+    }
+
+    @Test
     fun offlineFirstNewsRepository_news_resources_for_topic_is_backed_by_news_resource_dao() =
         testScope.runTest {
             assertEquals(
