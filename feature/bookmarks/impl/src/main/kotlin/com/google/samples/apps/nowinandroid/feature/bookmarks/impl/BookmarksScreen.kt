@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -39,6 +40,9 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
+import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -64,6 +68,7 @@ import com.google.samples.apps.nowinandroid.core.designsystem.component.NiaLoadi
 import com.google.samples.apps.nowinandroid.core.designsystem.component.scrollbar.DraggableScrollbar
 import com.google.samples.apps.nowinandroid.core.designsystem.component.scrollbar.rememberDraggableScroller
 import com.google.samples.apps.nowinandroid.core.designsystem.component.scrollbar.scrollbarState
+import com.google.samples.apps.nowinandroid.core.designsystem.icon.NiaIcons
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.LocalTintTheme
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
 import com.google.samples.apps.nowinandroid.core.model.data.SelectionUserNewsResource
@@ -197,57 +202,100 @@ private fun BookmarksGrid(
 ) {
     val scrollableState = rememberLazyStaggeredGridState()
     TrackScrollJank(scrollableState = scrollableState, stateName = "bookmarks:grid")
-    Box(
+    Column(
         modifier = modifier
             .fillMaxSize(),
     ) {
-        LazyVerticalStaggeredGrid(
-            columns = StaggeredGridCells.Adaptive(300.dp),
-            contentPadding = PaddingValues(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            verticalItemSpacing = 24.dp,
-            state = scrollableState,
-            modifier = Modifier
-                .fillMaxSize()
-                .testTag("bookmarks:feed"),
-        ) {
-            newsFeed(
-                feedState = feedState,
-                isBookMarkScreen = true,
-                isMultiSelectOn = isMultiSelectOn,
-                numSelectedNews = numSelectedNews,
-                onCloseMultiSelect = onCloseMultiSelect,
-                onBookmarkSelected = onBookmarkSelected,
-                onNewsResourcesCheckedChanged = { id, _ -> removeFromBookmarks(id) },
-                onNewsResourceViewed = onNewsResourceViewed,
-                onTopicClick = onTopicClick,
-                onInitMultiSelect = onInitMultiSelect,
-                onToggleSelection = onToggleSelection
 
-            )
-            item(span = StaggeredGridItemSpan.FullLine) {
-                Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.safeDrawing))
+        if(isMultiSelectOn){
+            Card(modifier = Modifier.fillMaxWidth()) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, end = 4.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = stringResource(com.google.samples.apps.nowinandroid.core.ui.R.string.core_ui_news_selected, numSelectedNews),
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                    Row {
+                        IconButton(
+                            onClick = onBookmarkSelected,
+                            enabled = numSelectedNews > 0,
+                        ) {
+                            Icon(
+                                imageVector = NiaIcons.Bookmark,
+                                contentDescription = stringResource(com.google.samples.apps.nowinandroid.core.ui.R.string.core_ui_unbookmark),
+                            )
+                        }
+                        IconButton(onClick = onCloseMultiSelect) {
+                            Icon(
+                                imageVector = NiaIcons.Close,
+                                contentDescription = stringResource(com.google.samples.apps.nowinandroid.core.ui.R.string.core_ui_close_multi_select),
+                            )
+                        }
+                    }
+                }
             }
         }
-        val itemsAvailable = when (feedState) {
-            Loading -> 1
-            is Success -> feedState.feed.size
-        }
-        val scrollbarState = scrollableState.scrollbarState(
-            itemsAvailable = itemsAvailable,
-        )
-        scrollableState.DraggableScrollbar(
-            modifier = Modifier
-                .fillMaxHeight()
-                .windowInsetsPadding(WindowInsets.systemBars)
-                .padding(horizontal = 2.dp)
-                .align(Alignment.CenterEnd),
-            state = scrollbarState,
-            orientation = Orientation.Vertical,
-            onThumbMoved = scrollableState.rememberDraggableScroller(
+
+        Spacer(modifier = Modifier.height(5.dp))
+
+
+        Box(modifier = Modifier.fillMaxSize()) {
+            LazyVerticalStaggeredGrid(
+                columns = StaggeredGridCells.Adaptive(300.dp),
+                contentPadding = PaddingValues(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalItemSpacing = 24.dp,
+                state = scrollableState,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .testTag("bookmarks:feed"),
+            ) {
+                newsFeed(
+                    feedState = feedState,
+                    isBookMarkScreen = true,
+                    isMultiSelectOn = isMultiSelectOn,
+                    numSelectedNews = numSelectedNews,
+                    onCloseMultiSelect = onCloseMultiSelect,
+                    onBookmarkSelected = onBookmarkSelected,
+                    onNewsResourcesCheckedChanged = { id, _ -> removeFromBookmarks(id) },
+                    onNewsResourceViewed = onNewsResourceViewed,
+                    onTopicClick = onTopicClick,
+                    onInitMultiSelect = onInitMultiSelect,
+                    onToggleSelection = onToggleSelection
+
+                )
+                item(span = StaggeredGridItemSpan.FullLine) {
+                    Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.safeDrawing))
+                }
+            }
+            val itemsAvailable = when (feedState) {
+                Loading -> 1
+                is Success -> feedState.feed.size
+            }
+            val scrollbarState = scrollableState.scrollbarState(
                 itemsAvailable = itemsAvailable,
-            ),
-        )
+            )
+            scrollableState.DraggableScrollbar(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .windowInsetsPadding(WindowInsets.systemBars)
+                    .padding(horizontal = 2.dp)
+                    .align(Alignment.CenterEnd),
+                state = scrollbarState,
+                orientation = Orientation.Vertical,
+                onThumbMoved = scrollableState.rememberDraggableScroller(
+                    itemsAvailable = itemsAvailable,
+                ),
+            )
+
+        }
+
+
     }
 }
 

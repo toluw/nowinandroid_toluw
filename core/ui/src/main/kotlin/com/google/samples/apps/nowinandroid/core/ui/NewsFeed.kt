@@ -71,41 +71,6 @@ fun LazyStaggeredGridScope.newsFeed(
     onInitMultiSelect: (String) -> Unit = {},
     onToggleSelection: (String) -> Unit = {}
 ) {
-    if (isMultiSelectOn) {
-        item(span = StaggeredGridItemSpan.FullLine) {
-            Card(modifier = Modifier.fillMaxWidth()) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 16.dp, end = 4.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text(
-                        text = stringResource(R.string.core_ui_news_selected, numSelectedNews),
-                        style = MaterialTheme.typography.titleMedium,
-                    )
-                    Row {
-                        IconButton(
-                            onClick = onBookmarkSelected,
-                            enabled = numSelectedNews > 0,
-                        ) {
-                            Icon(
-                                imageVector = NiaIcons.Bookmark,
-                                contentDescription = stringResource(R.string.core_ui_unbookmark),
-                            )
-                        }
-                        IconButton(onClick = onCloseMultiSelect) {
-                            Icon(
-                                imageVector = NiaIcons.Close,
-                                contentDescription = stringResource(R.string.core_ui_close_multi_select),
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
 
     when (feedState) {
         NewsFeedUiState.Loading -> Unit
