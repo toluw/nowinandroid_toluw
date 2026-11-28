@@ -16,6 +16,7 @@
 
 package com.google.samples.apps.nowinandroid.core.data.repository
 
+import com.google.samples.apps.nowinandroid.core.data.model.asNewsResource
 import com.google.samples.apps.nowinandroid.core.model.data.UserNewsResource
 import com.google.samples.apps.nowinandroid.core.model.data.mapToUserNewsResources
 import kotlinx.coroutines.flow.Flow
@@ -57,6 +58,10 @@ class CompositeUserNewsResourceRepository @Inject constructor(
                     else -> observeAll(NewsResourceQuery(filterTopicIds = followedTopics))
                 }
             }
+
+    override suspend fun updateUserNewsResource(userNewsResource: UserNewsResource) {
+        newsRepository.updateNewsResource(userNewsResource.asNewsResource())
+    }
 
     override fun observeAllBookmarked(): Flow<List<UserNewsResource>> =
         userDataRepository.userData.map { it.bookmarkedNewsResources }.distinctUntilChanged()

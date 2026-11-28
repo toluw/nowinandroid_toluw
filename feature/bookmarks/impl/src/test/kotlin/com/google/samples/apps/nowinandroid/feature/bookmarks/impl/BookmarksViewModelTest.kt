@@ -17,6 +17,7 @@
 package com.google.samples.apps.nowinandroid.feature.bookmarks.impl
 
 import com.google.samples.apps.nowinandroid.core.data.repository.CompositeUserNewsResourceRepository
+import com.google.samples.apps.nowinandroid.core.model.data.UserNewsResource
 import com.google.samples.apps.nowinandroid.core.testing.data.newsResourcesTestData
 import com.google.samples.apps.nowinandroid.core.testing.repository.TestNewsRepository
 import com.google.samples.apps.nowinandroid.core.testing.repository.TestUserDataRepository
@@ -25,6 +26,7 @@ import com.google.samples.apps.nowinandroid.core.ui.NewsFeedUiState.Loading
 import com.google.samples.apps.nowinandroid.core.ui.NewsFeedUiState.Success
 import com.google.samples.apps.nowinandroid.feature.bookmarks.impl.BookmarksViewModel
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
@@ -74,6 +76,24 @@ class BookmarksViewModelTest {
         val item = viewModel.feedUiState.value
         assertIs<Success>(item)
         assertEquals(item.feed.size, 1)
+    }
+
+    @Test
+    fun updateUserNewsResource_savesNoteAndUpdatesBookmarkedFeed() = runTest {
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.feedUiState.collect() }
+        val original = newsResourcesTestData.first()
+        newsRepository.sendNewsResources(newsResourcesTestData)
+        userDataRepository.setNewsResourceBookmarked(original.id, true)
+        userDataRepository.setNewsResourceViewed(original.id, true)
+        val updatedArticle = original.copy(note = "Read again later")
+        val updated = UserNewsResource(updatedArticle, userDataRepository.userData.first())
+
+        viewModel.updateUserNewsResource(updated)
+
+        val saved = newsRepository.getNewsResources().first().first { it.id == original.id }
+        assertEquals(updatedArticle, saved)
+        val after = assertIs<Success>(viewModel.feedUiState.value).feed.single().userNewsResource
+        assertEquals(updated, after)
     }
 
     @Test

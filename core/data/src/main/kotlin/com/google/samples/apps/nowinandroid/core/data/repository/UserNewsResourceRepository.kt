@@ -42,4 +42,9 @@ interface UserNewsResourceRepository {
      * Returns the user's bookmarked news resources as a stream.
      */
     fun observeAllBookmarked(): Flow<List<UserNewsResource>>
+
+    /**
+     * Updates the article data for the supplied [userNewsResource].
+     */
+    suspend fun updateUserNewsResource(userNewsResource: UserNewsResource)
 }
